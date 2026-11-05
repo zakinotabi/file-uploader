@@ -1,0 +1,37 @@
+<dialog id="login-modal" aria-labelledby="login-title">
+  <header>
+    <h2 id="login-title">Sign in</h2>
+    <p>Access your files and folders.</p>
+  </header>
+
+  <form action="/login" method="post">
+    <p>
+      <label for="login-email">Email</label>
+      <input id="login-email" name="email" type="email" autocomplete="email" required />
+    </p>
+
+    <p>
+      <label for="login-password">Password</label>
+      <input id="login-password" name="password" type="password" autocomplete="current-password" required />
+    </p>
+
+    <p>
+      <input id="login-remember" name="remember" type="checkbox" />
+      <label for="login-remember">Remember me</label>
+    </p>
+
+    <p>
+      <button type="submit">Sign in</button>
+    </p>
+  </form>
+
+  <p>No account? <a href="#signup-modal">Create one</a></p>
+
+  <p>
+    <button type="button">Continue with Google</button>
+  </p>
+
+  <form method="dialog">
+    <button type="submit">Cancel</button>
+  </form>
+</dialog>

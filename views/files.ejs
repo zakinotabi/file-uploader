@@ -1,0 +1,43 @@
+<main>
+  <h1>Files</h1>
+
+  <section aria-labelledby="files-upload-heading">
+    <h2 id="files-upload-heading">Upload a file</h2>
+    <form action="/files" method="POST" enctype="multipart/form-data">
+      <label for="files-file">Choose a file (max 10 MB: pdf, png, jpg, docx, xlsx, zip, mp4)</label>
+      <input id="files-file" name="file" type="file" accept=".pdf,.png,.jpg,.jpeg,.docx,.xlsx,.zip,.mp4" required />
+      <button type="submit">Upload</button>
+    </form>
+  </section>
+
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Size</th>
+        <th scope="col">Uploaded</th>
+        <th scope="col">Folder</th>
+        <th scope="col">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!--
+        Loop over files. One row example:
+        <tr>
+          <td><a href="/files/{file.id}">{file.name}</a></td>
+          <td>{file.sizeHuman}</td>
+          <td><time datetime="{file.uploadedAtISO}">{file.uploadedAtHuman}</time></td>
+          <td><a href="/folders/{file.folderId}">{file.folderName}</a></td>
+          <td>
+            <a href="/files/{file.id}/download">Download</a>
+            <button type="button" data-open="file-details-modal">Details</button>
+            <form action="/files/{file.id}" method="POST">
+              <input type="hidden" name="_method" value="DELETE">
+              <button type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+      -->
+    </tbody>
+  </table>
+</main>

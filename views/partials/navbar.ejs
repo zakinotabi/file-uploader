@@ -1,0 +1,27 @@
+<header>
+  <a href="/">Cloudrive</a>
+
+  <nav aria-label="Main">
+    <ul>
+      <!-- add aria-current="page" on the link matching the active route -->
+      <li><a href="/">Dashboard</a></li>
+      <li><a href="/folders">Folders</a></li>
+      <li><a href="/files">Files</a></li>
+    </ul>
+  </nav>
+
+  <div>
+    <!--
+      If NO user is logged in, show:
+        <button type="button" data-open="login-modal">Log in</button>
+        <button type="button" data-open="signup-modal">Sign up</button>
+
+      If a user IS logged in, show instead:
+        <p>Signed in as <strong>{user.email}</strong></p>
+        <form action="/logout" method="POST">
+          <button type="submit">Log out</button>
+        </form>
+    -->
+  </div>
+</header>
+<hr />

@@ -1,0 +1,39 @@
+<dialog id="file-details-modal">
+  <!--
+    Only render the block below when a `file` object is passed to this partial.
+    If rendered per row inside the files loop, the `data-open` button for that
+    row should target a unique modal id (e.g. "file-details-modal-{file.id}").
+
+    <h2>{file.name}</h2>
+    <p>Uploaded by {file.ownerName}</p>
+
+    <dl>
+      <dt>Type</dt>
+      <dd>{file.mimeType}</dd>
+
+      <dt>Size</dt>
+      <dd>{file.sizeHuman}</dd>
+
+      <dt>Uploaded</dt>
+      <dd><time datetime="{file.uploadedAtISO}">{file.uploadedAtHuman}</time></dd>
+
+      <dt>Folder</dt>
+      <dd><a href="/folders/{file.folderId}">{file.folderName}</a></dd>
+
+      <dt>Storage</dt>
+      <dd>{file.storageProvider}</dd>
+
+      <dt>Visibility</dt>
+      <dd>{file.isPublic ? 'Public' : 'Private'}</dd>
+    </dl>
+
+    <a href="/files/{file.id}/download">Download</a>
+
+    <form action="/files/{file.id}" method="POST">
+      <input type="hidden" name="_method" value="DELETE">
+      <button type="submit">Delete file</button>
+    </form>
+  -->
+
+  <button type="button" data-close="file-details-modal">Close</button>
+</dialog>

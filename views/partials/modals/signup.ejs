@@ -1,0 +1,43 @@
+<dialog id="signup-modal" aria-labelledby="signup-title">
+  <header>
+    <h2 id="signup-title">Create account</h2>
+    <p>Start storing and sharing your files.</p>
+  </header>
+
+  <form action="/signup" method="post">
+    <p>
+      <label for="signup-name">Full name</label>
+      <input id="signup-name" name="name" type="text" autocomplete="name" required />
+    </p>
+
+    <p>
+      <label for="signup-email">Email</label>
+      <input id="signup-email" name="email" type="email" autocomplete="email" required />
+    </p>
+
+    <p>
+      <label for="signup-password">Password</label>
+      <input id="signup-password" name="password" type="password" autocomplete="new-password" minlength="8" required />
+    </p>
+
+    <p>
+      <label for="signup-confirm">Confirm password</label>
+      <input id="signup-confirm" name="confirmPassword" type="password" autocomplete="new-password" minlength="8" required />
+    </p>
+
+    <p>
+      <input id="signup-terms" name="terms" type="checkbox" required />
+      <label for="signup-terms">I agree to the <a href="/terms">terms of service</a></label>
+    </p>
+
+    <p>
+      <button type="submit">Create account</button>
+    </p>
+  </form>
+
+  <p>Already have an account? <a href="#login-modal">Sign in</a></p>
+
+  <form method="dialog">
+    <button type="submit">Cancel</button>
+  </form>
+</dialog>

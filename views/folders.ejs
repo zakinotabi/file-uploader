@@ -1,0 +1,32 @@
+<main>
+  <h1>Folders</h1>
+
+  <button type="button" data-open="new-folder-modal">New folder</button>
+
+  <ul>
+    <!-- one folder example -->
+    <li>
+      <article>
+        <h2><a href="/folders/1">Design Assets</a></h2>
+        <p>24 files &middot; 780 MB &middot; created <time datetime="2026-09-01">Sep 1, 2026</time></p>
+
+        <form action="/folders/1" method="POST">
+          <input type="hidden" name="_method" value="DELETE" />
+          <button type="submit">Delete</button>
+        </form>
+
+        <details>
+          <summary>Rename</summary>
+          <form action="/folders/1" method="POST">
+            <input type="hidden" name="_method" value="PUT" />
+            <label for="rename-folder-1">New name</label>
+            <input id="rename-folder-1" name="name" type="text" value="Design Assets" maxlength="100" required />
+            <button type="submit">Save</button>
+          </form>
+        </details>
+
+        <button type="button" data-open="new-share-modal">Share folder</button>
+      </article>
+    </li>
+  </ul>
+</main>
