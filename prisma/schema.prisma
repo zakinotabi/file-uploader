@@ -23,6 +23,8 @@ file  Files[]
 
 model Files {
 id  Int @id @default(autoincrement())
+folderName String
+fileName String
 file String
 createdAt DateTime @default(now())
 author User @relation(fields: [authorId], references: [id]) 
