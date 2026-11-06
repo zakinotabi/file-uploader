@@ -5,6 +5,7 @@ import session from 'express-session';
 import expressEjsLayouts from 'express-ejs-layouts';
 
 import homeRouter from './routes/homeRouter.js';
+import Credentials from '@auth/core/providers/credentials';
 // import filesRouter from './routes/filesRouter';
 // import folderRouter from './routes/foldersRouter';
 
