@@ -4,10 +4,16 @@
     <p>Access your files and folders.</p>
   </header>
 
-  <form action="/login" method="post">
+  <form action="/auth/callback/credentials" method="post">
+    <!-- Auth.js CSRF token -->
+    <input type="hidden" name="csrfToken" id="login-csrf" />
+
+    <!-- Redirect after successful login -->
+    <input type="hidden" name="callbackUrl" value="/" />
+
     <p>
-      <label for="login-email">Email</label>
-      <input id="login-email" name="email" type="email" autocomplete="email" required />
+      <label for="login-username">Username</label>
+      <input id="login-username" name="username" type="text" autocomplete="off" required />
     </p>
 
     <p>

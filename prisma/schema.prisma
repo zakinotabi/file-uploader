@@ -13,20 +13,23 @@ datasource db {
 }
 
 model User {
-id  Int @id @default(autoincrement())
-name String 
-username String @unique
-password String
-role  String
-file  Files[]
+id          Int       @id @default(autoincrement())
+name        String 
+username    String    @unique
+password    String
+role        String
+storage     Int       @default(100)
+file        Files[]
 }
 
 model Files {
-id  Int @id @default(autoincrement())
-folderName String
-fileName String
-file String
-createdAt DateTime @default(now())
-author User @relation(fields: [authorId], references: [id]) 
-authorId Int
+id           Int      @id @default(autoincrement())
+folderName   String
+fileName     String
+storageKey   String   @unique  
+mimeType     String
+size         Int   
+createdAt    DateTime  @default(now())
+author       User      @relation(fields: [authorId], references: [id]) 
+authorId     Int
 }

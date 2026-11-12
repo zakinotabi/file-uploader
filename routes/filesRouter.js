@@ -4,6 +4,7 @@ import { Router } from 'express';
 const filesRouter = Router();
 
 filesRouter.get('/' /* filesController */);
+filesRouter.post('/upload' /* filesController */);
 filesRouter.post('/show' /* filesController */);
 filesRouter.post('/download' /* filesController */);
 filesRouter.post('/delete' /* filesController */);

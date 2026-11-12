@@ -1,9 +1,8 @@
 <header>
-  <a href="/">Cloudrive</a>
+  <a href="/">Btfsplk Cloud</a>
 
   <nav aria-label="Main">
     <ul>
-      <!-- add aria-current="page" on the link matching the active route -->
       <li><a href="/">Dashboard</a></li>
       <li><a href="/folders">Folders</a></li>
       <li><a href="/files">Files</a></li>
@@ -11,17 +10,57 @@
   </nav>
 
   <div>
-    <!--
-      If NO user is logged in, show:
-        <button type="button" data-open="login-modal">Log in</button>
-        <button type="button" data-open="signup-modal">Sign up</button>
+    <% if (session?.user) { %>
 
-      If a user IS logged in, show instead:
-        <p>Signed in as <strong>{user.email}</strong></p>
-        <form action="/logout" method="POST">
-          <button type="submit">Log out</button>
-        </form>
-    -->
+      <button type="button" data-open="login-modal">Log in</button>
+      <button type="button" data-open="signup-modal">Sign up</button>
+
+    <% } else { %>
+
+      <p>Signed in as <strong><%= session.user.name %></strong></p>
+
+      <button type="button" id="logout-button">Log out</button>
+
+      <form id="logout-form" action="/auth/signout" method="post" hidden>
+        <!-- It carries the secret CSRF token (for security) and a callbackUrl telling Auth.js 
+         where to redirect the user (back to the home page /) after they are successfully logged out. -->
+        <input type="hidden" name="csrfToken" id="logout-csrf">
+        <input type="hidden" name="callbackUrl" value="/">
+      </form>
+
+    <% } %>
   </div>
 </header>
 <hr />
+
+<script>
+  let csrfTokenPromise;
+
+  const getCsrfToken = () =>
+      // It fetches a CSRF token from Auth.js (/auth/csrf)
+      // as soon as the page loads, then injects it into a hidden
+      // <input id="csrfToken" name="csrfToken" type="hidden" /> inside your login form.
+    (csrfTokenPromise ??= fetch('/auth/csrf')
+      .then((response) => response.json())
+      .then((data) => data.csrfToken));
+
+  // Log in / Sign up: open the matching dialog
+  document.querySelectorAll('[data-open]').forEach((openButton) =>
+    openButton.addEventListener('click', () => {
+      document.getElementById(openButton.dataset.open).showModal();
+    })
+  );
+      // CSRF (Cross-Site Request Forgery) is a security attack where a malicious website
+      // tricks your browser into submitting a form on your behalf.
+      // Auth.js requires a valid CSRF token for any POST request (like logging in).
+      // Without this script, Auth.js will reject your login attempt for security reasons.
+  document.querySelector('[data-open="login-modal"]')?.addEventListener('click', async () => {
+    document.getElementById('login-csrf').value = await getCsrfToken();
+  });
+
+  // Log out: same cached token, then submit
+  document.getElementById('logout-button')?.addEventListener('click', async () => {
+    document.getElementById('logout-csrf').value = await getCsrfToken();
+    document.getElementById('logout-form').requestSubmit();
+  });
+</script>
