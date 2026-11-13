@@ -21,23 +21,28 @@
       </tr>
     </thead>
     <tbody>
-      <!--
-        Loop over files. One row example:
+      <% if (folder.files.length === 0) { %>
         <tr>
-          <td><a href="/files/{file.id}">{file.name}</a></td>
-          <td>{file.sizeHuman}</td>
-          <td><time datetime="{file.uploadedAtISO}">{file.uploadedAtHuman}</time></td>
-          <td><a href="/folders/{file.folderId}">{file.folderName}</a></td>
-          <td>
-            <a href="/files/{file.id}/download">Download</a>
-            <button type="button" data-open="file-details-modal">Details</button>
-            <form action="/files/{file.id}" method="POST">
-              <input type="hidden" name="_method" value="DELETE">
-              <button type="submit">Delete</button>
-            </form>
-          </td>
+          <td colspan="5">No files in this folder.</td>
         </tr>
-      -->
+      <% } else { %>
+        <% folder.files.forEach(file => { %>
+          <tr>
+            <td><a href="/files/<%= file.id %>"><%= file.fileName %></a></td>
+            <td><%= file.size %> bytes</td>
+            <td><time datetime="<%= file.createdAt.toISOString() %>"><%= file.createdAt.toLocaleDateString() %></time></td>
+            <td><a href="/folders/<%= folder.id %>"><%= folder.folderName %></a></td>
+            <td>
+              <a href="/files/<%= file.id %>/download">Download</a>
+              <button type="button" data-open="file-details-modal">Details</button>
+              <form action="/files/<%= file.id %>" method="POST" style="display: inline;">
+                <input type="hidden" name="_method" value="DELETE">
+                <button type="submit">Delete</button>
+              </form>
+            </td>
+          </tr>
+        <% }) %>
+      <% } %>
     </tbody>
   </table>
 </main>

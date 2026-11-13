@@ -1,13 +1,12 @@
 import { Router } from 'express';
-// import * as
+import * as folderController from '../controllers/folders.js';
 
 const folderRouter = Router();
 
-folderRouter.get('/' /* folderController */);
-folderRouter.get('/all' /* folderController */);
-folderRouter.get('/:id' /* folderController */);
-folderRouter.post('/add' /* folderController */);
-folderRouter.post('/edit' /* folderController */);
-folderRouter.post('/delete' /* folderController */);
+folderRouter.get('/', folderController.getFolders);
+folderRouter.get('/:id', folderController.getSingleFolder);
+folderRouter.post('/add', folderController.setNewFolder);
+folderRouter.post('/:id/rename', folderController.setFolderName);
+folderRouter.post('/:id/delete', folderController.deleteFolder);
 
 export default folderRouter;

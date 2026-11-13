@@ -10,7 +10,7 @@
   </nav>
 
   <div>
-    <% if (session?.user) { %>
+    <% if (!locals.session?.user) { %>
 
       <button type="button" data-open="login-modal">Log in</button>
       <button type="button" data-open="signup-modal">Sign up</button>
