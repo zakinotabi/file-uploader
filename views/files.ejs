@@ -1,48 +1,50 @@
-<main>
-  <h1>Files</h1>
+<div class="page-head split">
+  <div>
+    
+  <h1>
+    <% if (locals.currentFolder) { %>
+    <span class="folder-opened"><%= currentFolder %> </span> &gt; 
+    <% } %>
+    Files
+  </h1>
 
-  <section aria-labelledby="files-upload-heading">
-    <h2 id="files-upload-heading">Upload a file</h2>
-    <form action="/files" method="POST" enctype="multipart/form-data">
-      <label for="files-file">Choose a file (max 10 MB: pdf, png, jpg, docx, xlsx, zip, mp4)</label>
-      <input id="files-file" name="file" type="file" accept=".pdf,.png,.jpg,.jpeg,.docx,.xlsx,.zip,.mp4" required />
-      <button type="submit">Upload</button>
-    </form>
-  </section>
+    <div class="meta"><%= (files?.length || 0) %> files</div>
+  </div>
+  <div class="page-head-actions">
+    <div class="seg compact">
+      <button class="on" type="button" title="Grid"><svg class="icon"><use href="#i-grid"/></svg></button>
+      <button type="button" title="List"><svg class="icon"><use href="#i-list"/></svg></button>
+    </div>
+    <button class="btn primary" type="button" data-open="add-file-modal"><svg class="icon"><use href="#i-upload"/></svg> Upload file</button>
+  </div>
+</div>
 
-  <table>
-    <thead>
-      <tr>
-        <th scope="col">Name</th>
-        <th scope="col">Size</th>
-        <th scope="col">Uploaded</th>
-        <th scope="col">Folder</th>
-        <th scope="col">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% if (folder.files.length === 0) { %>
-        <tr>
-          <td colspan="5">No files in this folder.</td>
-        </tr>
-      <% } else { %>
-        <% folder.files.forEach(file => { %>
-          <tr>
-            <td><a href="/files/<%= file.id %>"><%= file.fileName %></a></td>
-            <td><%= file.size %> bytes</td>
-            <td><time datetime="<%= file.createdAt.toISOString() %>"><%= file.createdAt.toLocaleDateString() %></time></td>
-            <td><a href="/folders/<%= folder.id %>"><%= folder.folderName %></a></td>
-            <td>
-              <a href="/files/<%= file.id %>/download">Download</a>
-              <button type="button" data-open="file-details-modal">Details</button>
-              <form action="/files/<%= file.id %>" method="POST" style="display: inline;">
-                <input type="hidden" name="_method" value="DELETE">
-                <button type="submit">Delete</button>
-              </form>
-            </td>
-          </tr>
-        <% }) %>
-      <% } %>
-    </tbody>
-  </table>
-</main>
+<div class="table">
+  <div class="row head">
+    <div>Name</div>
+    <div class="cell">Size</div>
+    <div class="cell date">Uploaded file</div>
+
+    <div></div>
+  </div>
+
+  <% files?.forEach(file => { %>
+    <div class="row js-file" onclick='openFileModal(<%= JSON.stringify(file) %>)'>
+      <div class="fcell">
+          <div class="badge-file"><img src="https://api.iconify.design/vscode-icons/file-type-<%= file.mimeType.split('/')[0] %>.svg" alt=""></div>
+        <div style="min-width:0">
+          <div class="fname"><%= file.fileName %></div>
+          <div class="fsub"><%= file.folder?.folderName || file.folder?.name || 'Unsorted' %></div>
+        </div>
+      </div>
+      <div class="cell"><%= file.size %></div>
+      <div class="cell date"><%= file.createdAt?.toLocaleDateString() || '' %></div>
+
+      <div class="actions">
+        <a class="mini" href="/files/<%= file.id %>/download" title="Download"><svg class="icon"><use href="#i-download"/></svg></a>
+        <a class="mini" href="/files/<%= file.id %>" title="Details"><svg class="icon"><use href="#i-share"/></svg></a>
+        <button class="mini" type="button" title="More"><svg class="icon"><use href="#i-more"/></svg></button>
+      </div>
+    </div>
+  <% }) %>
+</div>

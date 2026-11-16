@@ -26,18 +26,11 @@
       <label for="login-remember">Remember me</label>
     </p>
 
-    <p>
-      <button type="submit">Sign in</button>
-    </p>
+    <div class="form-actions">
+      <button type="submit" class="dialog-submit">Sign in</button>
+      <button type="button" class="dialog-cancel" data-close="login-modal">Cancel</button>
+    </div>
   </form>
 
-  <p>No account? <a href="#signup-modal">Create one</a></p>
-
-  <p>
-    <button type="button">Continue with Google</button>
-  </p>
-
-  <form method="dialog">
-    <button type="submit">Cancel</button>
-  </form>
+  <p class="modal-switch">No account? <button type="button" class="modal-switch-link" data-switch-modal="signup-modal">Create one</button></p>
 </dialog>

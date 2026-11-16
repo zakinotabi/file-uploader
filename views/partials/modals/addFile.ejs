@@ -1,0 +1,32 @@
+<dialog id="add-file-modal" aria-labelledby="add-file-title">
+  <header>
+    <h2 id="add-file-title">Upload file</h2>
+    <p>Select a file and choose where to save it.</p>
+  </header>
+
+  <form action="/files/upload" method="post" enctype="multipart/form-data">
+    <p>
+      <label for="upload-file-input">Select file</label>
+      <input id="upload-file-input" name="file" type="file" required />
+    </p>
+
+    <p>
+      <label for="upload-folder-select">Folder</label>
+      <select id="upload-folder-select" name="folderId" required>
+        <% const uploadFolders = Array.isArray(locals.folders) ? locals.folders : []; %>
+        <% if (uploadFolders.length === 0) { %>
+          <option value="">No folders available</option>
+        <% } else { %>
+          <% uploadFolders.forEach(folder => { %>
+            <option value="<%= folder.id %>"><%= folder.folderName %></option>
+          <% }); %>
+        <% } %>
+      </select>
+    </p>
+
+    <div class="form-actions">
+      <button type="submit" class="dialog-submit btn-primary">Upload</button>
+      <button type="button" class="dialog-cancel ghost-btn" data-close="add-file-modal">Cancel</button>
+    </div>
+  </form>
+</dialog>

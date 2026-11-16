@@ -1,39 +1,52 @@
-<dialog id="file-details-modal">
-  <!--
-    Only render the block below when a `file` object is passed to this partial.
-    If rendered per row inside the files loop, the `data-open` button for that
-    row should target a unique modal id (e.g. "file-details-modal-{file.id}").
+<div class="overlay" id="file-details-overlay"></div>
 
-    <h2>{file.name}</h2>
-    <p>Uploaded by {file.ownerName}</p>
+<aside class="drawer" id="file-details-modal" aria-label="File details">
+  <div class="drawer-head">
+    <h3>File details</h3>
+    <button type="button" class="icon-btn" data-close="file-details-modal" aria-label="Close file details">
+      <svg class="icon"><use href="#i-close" /></svg>
+    </button>
+  </div>
 
-    <dl>
-      <dt>Type</dt>
-      <dd>{file.mimeType}</dd>
+  <div class="drawer-body">
+    <div class="thumb">
+      <div class="badge-file"><img src="" alt="" /></div>
+    </div>
 
-      <dt>Size</dt>
-      <dd>{file.sizeHuman}</dd>
+    <div class="drawer-file-name" id="modal-file-name"></div>
+    <div class="drawer-file-sub">Uploaded by <span id="modal-file-author">Unknown</span></div>
 
-      <dt>Uploaded</dt>
-      <dd><time datetime="{file.uploadedAtISO}">{file.uploadedAtHuman}</time></dd>
-
-      <dt>Folder</dt>
-      <dd><a href="/folders/{file.folderId}">{file.folderName}</a></dd>
-
-      <dt>Storage</dt>
-      <dd>{file.storageProvider}</dd>
-
-      <dt>Visibility</dt>
-      <dd>{file.isPublic ? 'Public' : 'Private'}</dd>
+    <dl class="meta-list">
+      <div class="meta">
+        <dt>Type</dt>
+        <dd id="modal-file-mimetype">—</dd>
+      </div>
+      <div class="meta">
+        <dt>Size</dt>
+        <dd id="modal-file-size">—</dd>
+      </div>
+      <div class="meta">
+        <dt>Uploaded</dt>
+        <dd><time id="modal-file-date"></time></dd>
+      </div>
+      <div class="meta">
+        <dt>Folder</dt>
+        <dd><a id="modal-file-folder-link" href="#">View Folder</a></dd>
+      </div>
+      <div class="meta">
+        <dt>Storage</dt>
+        <dd id="modal-file-storage">—</dd>
+      </div>
     </dl>
+  </div>
 
-    <a href="/files/{file.id}/download">Download</a>
+  <div class="drawer-foot">
+    <a id="modal-file-download" class="btn primary" href="#">
+      <svg class="icon"><use href="#i-download" /></svg> Download
+    </a>
 
-    <form action="/files/{file.id}" method="POST">
-      <input type="hidden" name="_method" value="DELETE">
-      <button type="submit">Delete file</button>
-    </form>
-  -->
-
-  <button type="button" data-close="file-details-modal">Close</button>
-</dialog>
+    <button type="button" id="modal-file-delete-button" class="btn danger" title="Delete file" data-open="delete-file-modal">
+      <svg class="icon"><use href="#i-trash" /></svg>
+    </button>
+  </div>
+</aside>

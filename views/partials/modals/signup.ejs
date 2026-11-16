@@ -5,6 +5,8 @@
   </header>
 
   <form action="/signup" method="post">
+    <input type="hidden" name="csrfToken" id="signup-csrf" />
+
     <p>
       <label for="signup-name">Full name</label>
       <input id="signup-name" name="name" type="text" autocomplete="off" required />
@@ -30,14 +32,11 @@
       <label for="signup-terms">I agree to the <a href="/terms">terms of service</a></label>
     </p>
 
-    <p>
-      <button type="submit">Create account</button>
-    </p>
+    <div class="form-actions">
+      <button type="submit" class="dialog-submit">Create account</button>
+      <button type="button" class="dialog-cancel" data-close="signup-modal">Cancel</button>
+    </div>
   </form>
 
-  <p>Already have an account? <a href="#login-modal">Sign in</a></p>
-
-  <form method="dialog">
-    <button type="submit">Cancel</button>
-  </form>
+  <p class="modal-switch">Already have an account? <button type="button" class="modal-switch-link" data-switch-modal="login-modal">Log in</button></p>
 </dialog>

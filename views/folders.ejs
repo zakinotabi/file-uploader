@@ -1,33 +1,41 @@
-<main>
-  <h1>Folders</h1>
+<div class="page-head split">
+  <div>
+    <h1>Folders</h1>
+    <div class="meta"><%= (folders?.length || 0) %> folders</div>
+  </div>
+  <div class="page-head-actions">
+    <div class="seg compact">
+      <button class="on" type="button" title="Grid"><svg class="icon"><use href="#i-grid"/></svg></button>
+      <button type="button" title="List"><svg class="icon"><use href="#i-list"/></svg></button>
+    </div>
+    <button class="btn" type="button" data-open="new-folder-modal"><svg class="icon"><use href="#i-plus"/></svg> New folder</button>
+  </div>
+</div>
 
-  <button type="button" data-open="new-folder-modal">New folder</button>
+<div class="folders">
+  <% folders?.forEach(folder => { %>
+    <div class="folder-card">
+      <a class="folder-card-link" href="/folders/<%= folder.id %>">
+        <div class="folder-ico"><svg class="icon"><use href="#i-folder"/></svg></div>
+        <div style="min-width:0">
+          <div class="f-name"><%= folder.folderName %></div>
+          <div class="f-meta"><%= folder._count?.files || 0 %> files</div>
+        </div>
+      </a>
 
-  <ul>
-    <% folders.forEach(folder => { %>
-      <li>
-        <article>
-          <h2><a href="/folders/<%= folder.id %>"><%= folder.folderName %></a></h2>
-          <p><%= folder._count.files %> files &middot; <%= folder.totalSize %> &middot; created <time datetime="<%= folder.createdAt %>"></time></p>
+      <div class="folder-actions">
+        <button class="mini folder-action" type="button" data-open="edit-folder-modal-<%= folder.id %>" title="Edit folder">
+          <svg class="icon"><use href="#i-edit" /></svg>
+        </button>
+          <% if (folder.id > 1) {%>
+            <button class="mini folder-action danger" type="button" data-open="delete-folder-modal-<%= folder.id %>" title="Delete folder">
+            <svg class="icon"><use href="#i-trash" /></svg>
+          </button>
+         <%} %>
+      </div>
+    </div>
 
-          <form action="/folders/<%= folder.id %>/delete" method="POST">
-            <input type="hidden" name="_method" value="DELETE" />
-            <button type="submit">Delete</button>
-          </form>
-
-          <details>
-            <summary>Rename</summary>
-            <form action="/folders/<%= folder.id %>/rename" method="POST">
-              <input type="hidden" name="_method" value="PUT" />
-              <label for="rename-folder-<%= folder.id %>">New name</label>
-              <input id="rename-folder-<%= folder.id %>" name="name" type="text" value="<%= folder.folderName %>" maxlength="100" required />
-              <button type="submit">Save</button>
-            </form>
-          </details>
-
-          <button type="button" data-open="new-share-modal">Share folder</button>
-        </article>
-      </li>
-    <% }) %>
-  </ul>
-</main>
+    <%- include('partials/modals/editFolder', { folder: folder }) %>
+    <%- include('partials/modals/deleteFolder', { folder: folder }) %>
+  <% }) %>
+</div>

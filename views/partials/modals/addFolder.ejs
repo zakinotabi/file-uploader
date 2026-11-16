@@ -10,12 +10,9 @@
       <input id="folder-name" name="name" type="text" maxlength="120" required />
     </p>
 
-    <p>
-      <button type="submit">Create folder</button>
-    </p>
-  </form>
-
-  <form method="dialog">
-    <button type="submit">Cancel</button>
+    <div class="form-actions">
+      <button type="submit" class="dialog-submit">Create folder</button>
+      <button type="button" class="dialog-cancel" data-close="new-folder-modal">Cancel</button>
+    </div>
   </form>
 </dialog>

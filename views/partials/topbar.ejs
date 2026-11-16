@@ -1,0 +1,101 @@
+<header class="topbar">
+  <div class="search">
+    <svg class="icon"><use href="#i-search" /></svg>
+    <input type="text" placeholder="Search files and folders…" />
+  </div>
+
+  <div class="topbar-actions">
+    <% if (!locals.session?.user) { %>
+      <button type="button" class="btn" data-open="login-modal">Log in</button>
+      <button type="button" class="btn primary" data-open="signup-modal">Sign up</button>
+    <% } else { %>
+      <span class="user-inline">Signed in as <strong><%= locals.session.user.name %></strong></span>
+      <button type="button" class="btn" id="logout-button">Log out</button>
+
+      <form id="logout-form" action="/auth/signout" method="post" hidden>
+        <input type="hidden" name="csrfToken" id="logout-csrf">
+        <input type="hidden" name="callbackUrl" value="/">
+      </form>
+    <% } %>
+
+    <div class="avatar">AK</div>
+  </div>
+</header>
+
+<script>
+  let csrfTokenPromise;
+
+  const getCsrfToken = () =>
+    (csrfTokenPromise ??= fetch('/auth/csrf')
+      .then((response) => response.json())
+      .then((data) => data.csrfToken));
+
+  document.addEventListener('click', async (event) => {
+    const switchButton = event.target.closest('[data-switch-modal]');
+    if (switchButton) {
+      event.preventDefault();
+
+      const currentDialog = switchButton.closest('dialog');
+      if (currentDialog && typeof currentDialog.close === 'function') {
+        currentDialog.close();
+      }
+
+      const targetId = switchButton.dataset.switchModal;
+      const targetDialog = document.getElementById(targetId);
+      if (!targetDialog) return;
+
+      if (targetId === 'login-modal') {
+        document.getElementById('login-csrf').value = await getCsrfToken();
+      }
+
+      if (targetId === 'signup-modal') {
+        document.getElementById('signup-csrf').value = await getCsrfToken();
+      }
+
+      targetDialog.showModal();
+      return;
+    }
+
+    const closeButton = event.target.closest('[data-close]');
+    if (closeButton) {
+      const targetId = closeButton.dataset.close;
+      const target = document.getElementById(targetId);
+
+      if (target && typeof target.close === 'function') {
+        target.close();
+        return;
+      }
+
+      if (target) {
+        target.classList.remove('open');
+        const overlay = document.getElementById(`${targetId}-overlay`);
+        if (overlay) overlay.classList.remove('show');
+      }
+      return;
+    }
+
+    const openButton = event.target.closest('[data-open]');
+    if (!openButton) return;
+
+    event.preventDefault();
+
+    const modalId = openButton.dataset.open;
+    const modal = document.getElementById(modalId);
+    if (!modal) return;
+
+    if (modalId === 'login-modal') {
+      document.getElementById('login-csrf').value = await getCsrfToken();
+    }
+
+    if (modalId === 'signup-modal') {
+      document.getElementById('signup-csrf').value = await getCsrfToken();
+    }
+
+    modal.showModal();
+  });
+
+  document.getElementById('logout-button')?.addEventListener('click', async () => {
+    document.getElementById('logout-csrf').value = await getCsrfToken();
+    document.getElementById('logout-form').requestSubmit();
+  });
+</script>

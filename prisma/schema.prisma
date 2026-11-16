@@ -20,26 +20,30 @@ password    String
 role        String
 storage     Int       @default(100)
 folders     Folder[]
+files       File[]
 }
 
 model Folder{
-id           Int      @id @default(autoincrement())
+id           Int       @id @default(autoincrement())
 folderName   String
 createdAt    DateTime  @default(now())
 author       User      @relation(fields: [authorId], references: [id]) 
 authorId     Int
 files        File[]
+
 }
 
 model File {
-id           Int      @id @default(autoincrement())
+id           Int       @id @default(autoincrement())
 fileName     String
-storageKey   String   @unique  
+storageKey   String    @unique  
 mimeType     String
 size         Int   
 createdAt    DateTime  @default(now())
-folder       Folder   @relation(fields: [folderId], references: [id], onDelete: Cascade)
+folder       Folder    @relation(fields: [folderId], references: [id], onDelete: Cascade)
 folderId     Int
+author       User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
+authorId     Int                                                                      
 }
 
 

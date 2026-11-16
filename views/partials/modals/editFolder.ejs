@@ -1,0 +1,18 @@
+<dialog id="edit-folder-modal-<%= folder.id %>" aria-labelledby="edit-folder-title-<%= folder.id %>">
+  <header>
+    <h2 id="edit-folder-title-<%= folder.id %>">Rename folder</h2>
+    <p>Update this folder name.</p>
+  </header>
+
+  <form action="/folders/<%= folder.id %>/rename" method="post">
+    <p>
+      <label for="folder-name-<%= folder.id %>">Folder name</label>
+      <input id="folder-name-<%= folder.id %>" name="name" type="text" maxlength="120" value="<%= folder.folderName %>" required />
+    </p>
+
+    <div class="form-actions">
+      <button type="submit" class="dialog-submit">Save changes</button>
+      <button type="button" class="dialog-cancel" data-close="edit-folder-modal-<%= folder.id %>">Cancel</button>
+    </div>
+  </form>
+</dialog>

@@ -28,17 +28,30 @@ export async function getFolders(req, res) {
   res.render('folders', { folders: folders });
 }
 export async function getSingleFolder(req, res) {
-  const folder = await prisma.folder.findUnique({
+  const files = await prisma.file.findMany({
     where: {
-      id: Number(req.params.id),
+      folderId: Number(req.params.id),
       authorId: Number(res.locals.session.user.id),
     },
     include: {
-      files: true,
+      folder: {
+        select: {
+          folderName: true,
+        },
+      },
     },
   });
-
-  res.render('files', { folder: folder });
+  //we need to link that to sidebar only
+  const folders = await prisma.folder.findMany({
+    where: {
+      authorId: Number(res.locals.session.user.id),
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+  const folderName = files[0]?.folder?.folderName || '';
+  res.render('files', { files: files, folders: folders, currentFolder: folderName });
 }
 
 export async function setFolderName(req, res) {

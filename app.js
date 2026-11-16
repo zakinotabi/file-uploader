@@ -24,7 +24,7 @@ app.use(expressEjsLayouts);
 app.use('/auth', ExpressAuth(authConfig));
 
 app.use('/', callGetSession, homeRouter);
-// app.use('/files', filesRouter);
+app.use('/files', filesRouter);
 app.use('/folders', folderRouter);
 
 app.listen(PORT, () => {

@@ -1,0 +1,15 @@
+<dialog id="delete-file-modal" aria-labelledby="delete-file-title">
+  <header>
+    <h2 id="delete-file-title">Delete file</h2>
+    <p>This action cannot be undone.</p>
+  </header>
+
+  <form id="delete-file-form" method="post">
+    <p>Are you sure you want to delete <strong id="delete-file-name">this file</strong>?</p>
+
+    <div class="form-actions">
+      <button type="submit" class="dialog-submit danger">Delete file</button>
+      <button type="button" class="dialog-cancel" data-close="delete-file-modal">Cancel</button>
+    </div>
+  </form>
+</dialog>

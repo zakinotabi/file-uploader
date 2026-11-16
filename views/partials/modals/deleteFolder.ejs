@@ -1,0 +1,15 @@
+<dialog id="delete-folder-modal-<%= folder.id %>" aria-labelledby="delete-folder-title-<%= folder.id %>">
+  <header>
+    <h2 id="delete-folder-title-<%= folder.id %>">Delete folder</h2>
+    <p>This action cannot be undone.</p>
+  </header>
+
+  <form action="/folders/<%= folder.id %>/delete" method="post">
+    <p>Are you sure you want to delete <strong><%= folder.folderName %></strong>?</p>
+
+    <div class="form-actions">
+      <button type="submit" class="dialog-submit danger">Delete folder</button>
+      <button type="button" class="dialog-cancel" data-close="delete-folder-modal-<%= folder.id %>">Cancel</button>
+    </div>
+  </form>
+</dialog>

@@ -4,18 +4,88 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Btfsplk Cloud</title>
+    <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
-    <%- include('partials/navbar') %>
-    <!--  -->
-    <%- body %>
-    <!--  -->
-    <%- include('partials/modals/login') %>
-    <!--  -->
-    <%- include('partials/modals/signup') %>
-    <!--  -->
-    <%-include('partials/modals/addFolder') %>
-    <!--  -->
-    <%- include('partials/footer') %>
+    <%- include('partials/icons') %>
+
+    <div class="site-shell">
+      <div class="dashboard-shell">
+        <%- include('partials/sidebar') %>
+
+        <div class="main-panel">
+          <%- include('partials/topbar') %>
+
+          <div class="content"><%- body %></div>
+        </div>
+      </div>
+
+      <%- include('partials/modals/login') %> <%- include('partials/modals/signup') %> <%- include('partials/modals/addFile') %> <%-
+      include('partials/modals/addFolder') %> <%- include('partials/modals/deleteFile') %> <%- include('partials/modals/showFile') %> <%-
+      include('partials/footer') %>
+    </div>
   </body>
+  <script>
+    function openFileModal(file) {
+      const drawer = document.getElementById('file-details-modal');
+      const overlay = document.getElementById('file-details-overlay');
+      if (!drawer || !overlay) return;
+
+      const nameEl = document.getElementById('modal-file-name');
+      const authorEl = document.getElementById('modal-file-author');
+      const mimeEl = document.getElementById('modal-file-mimetype');
+      const sizeEl = document.getElementById('modal-file-size');
+      const dateEl = document.getElementById('modal-file-date');
+      const folderLink = document.getElementById('modal-file-folder-link');
+      const storageEl = document.getElementById('modal-file-storage');
+      const downloadLink = document.getElementById('modal-file-download');
+      const deleteFileForm = document.getElementById('delete-file-form');
+      const deleteFileName = document.getElementById('delete-file-name');
+      const badgeEl = document.querySelector('#file-details-modal .badge-file');
+      const image = badgeEl ? badgeEl.querySelector('img') : null;
+
+      nameEl.textContent = file.fileName || 'Untitled file';
+      deleteFileName.textContent = file.fileName || 'this file';
+      authorEl.textContent = file.author ? file.author.name : 'Unknown';
+      mimeEl.textContent = file.mimeType || 'Unknown';
+      // sizeEl.textContent = formatBytes(Number(file.size) || 0);
+      sizeEl.textContent = file.size;
+
+      const mimeType = file.mimeType.split('/')[0];
+      image.src = `https://api.iconify.design/vscode-icons/file-type-${mimeType}.svg`;
+
+      const dateObj = new Date(file.createdAt || Date.now());
+
+      dateEl.textContent = dateObj.toLocaleDateString();
+      dateEl.setAttribute('datetime', file.createdAt || new Date().toISOString());
+
+      const folderId = file.folderId ?? file.folder?.id;
+
+      folderLink.href = folderId ? `/folders/${folderId}` : '#';
+      folderLink.textContent = file.folder ? file.folder.folderName || file.folder.name : folderId ? `Folder #${folderId}` : 'Unsorted';
+
+      storageEl.textContent = file.storageKey || 'Unknown';
+      downloadLink.href = file.id ? `/files/${file.id}/download` : '#';
+      deleteFileForm.action = file.id ? `/files/${file.id}/delete` : '#';
+
+      drawer.classList.add('open');
+      overlay.classList.add('show');
+    }
+
+    function closeFileModal() {
+      const drawer = document.getElementById('file-details-modal');
+      const overlay = document.getElementById('file-details-overlay');
+      drawer.classList.remove('open');
+      overlay.classList.remove('show');
+    }
+
+    document.addEventListener('click', (event) => {
+      const overlay = document.getElementById('file-details-overlay');
+      if (event.target === overlay) closeFileModal();
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeFileModal();
+    });
+  </script>
 </html>

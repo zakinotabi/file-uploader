@@ -1,0 +1,37 @@
+<aside class="sidebar">
+  <div class="brand">
+    <div class="brand-mark"><svg class="icon"><use href="#i-cloud"/></svg></div>
+    Cloudrive
+  </div>
+
+  <a  class="nav-item active" href="/"><svg class="icon"><use href="#i-folder"/></svg> My Drive</a>
+  <a class="nav-item" href="/folders"><svg class="icon"><use href="#i-folder"/></svg> All folders</a>
+  <a class="nav-item" href="/files"><svg class="icon"><use href="#i-clock"/></svg> All files</a>
+  <div class="nav-item"><svg class="icon"><use href="#i-star"/></svg> Starred</div>
+  <div class="nav-item"><svg class="icon"><use href="#i-trash"/></svg> Trash</div>
+
+  <div class="nav-label">Folders</div>
+  <% if (typeof folders !== 'undefined' && folders && folders.length) { %>
+    <% folders.forEach(folder => { %>
+      <a class="nav-item" href="/folders/<%= folder.id %>">
+        <svg class="icon"><use href="#i-folder"/></svg>
+        <span><%= folder.folderName %></span>
+      </a>
+    <% }) %>
+  <% } %>
+
+  <div class="sidebar-foot">
+    <div class="storage">
+      <div class="storage-top"><span>Storage</span><span>2.4 / 15 GB</span></div>
+      <div class="meter"><i></i></div>
+      <div class="hint">16% of your plan used</div>
+    </div>
+    <div class="user-chip">
+      <div class="avatar">AK</div>
+      <div>
+        <div class="u-name"><%= locals.session?.user?.name || 'Alex Kim' %></div>
+        <div class="u-mail"><%= locals.session?.user?.email || 'alex@company.com' %></div>
+      </div>
+    </div>
+  </div>
+</aside>

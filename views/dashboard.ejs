@@ -1,65 +1,119 @@
-<main>
-  <h1>Dashboard</h1>
+<main class="page-shell">
+  <div class="page-head">
+    <div>
+      <h1>My Drive</h1>
+      <div class="meta"><%= (folders?.length || 0) %> folders · <%= (files?.length || 0) %> files · <%= userStorage?._sum.size %> used</div>
+    </div>
+  </div>
 
-  <section aria-labelledby="storage-heading">
-    <h2 id="storage-heading">Storage</h2>
-    <!-- storage summary text, e.g. "{usedGb} GB of {totalGb} GB used" -->
+  <div class="section-title-row">
+    <a href="/folders" class="section-title">Folders <span class="badge"><%= folders?.length || 0 %></span></a>
+    <div class="section-actions">
+      <div class="seg compact">
+        <button class="on" type="button" title="Grid"><svg class="icon"><use href="#i-grid"/></svg></button>
+        <button type="button" title="List"><svg class="icon"><use href="#i-list"/></svg></button>
+      </div>
+      <button class="btn" type="button" data-open="new-folder-modal"><svg class="icon"><use href="#i-plus"/></svg> New folder</button>
+    </div>
+  </div>
+  <div class="folders">
+    <% folders?.forEach(folder => { %>
+      <div class="folder-card">
+        <a class="folder-card-link" href="/folders/<%= folder.id %>">
+          <div class="folder-ico"><svg class="icon"><use href="#i-folder"/></svg></div>
+          <div style="min-width:0">
+            <div class="f-name"><%= folder.folderName %></div>
+            <div class="f-meta"><%= folder.files?.length || 0 %> files</div>
+          </div>
+        </a>
 
-    <!-- progress bar: value = usedGb, max = totalGb -->
-    <progress value="" max="100"></progress>
-  </section>
+        <div class="folder-actions">
+          <button class="mini folder-action" type="button" data-open="edit-folder-modal-<%= folder.id %>" title="Edit folder">
+            <svg class="icon"><use href="#i-edit" /></svg>
+          </button>
+          <% if (folder.id > 1) {%>
+            <button class="mini folder-action danger" type="button" data-open="delete-folder-modal-<%= folder.id %>" title="Delete folder">
+            <svg class="icon"><use href="#i-trash" /></svg>
+          </button>
+         <%} %>
+          
+        </div>
+      </div>
 
-  <section aria-labelledby="upload-heading">
-    <h2 id="upload-heading">Upload a file</h2>
-    <form action="/files/upload" method="POST" enctype="multipart/form-data">
-      <label for="dashboard-file">Choose a file (max 10 MB: pdf, png, jpg, docx, xlsx, zip, mp4)</label>
-      <input id="dashboard-file" name="file" type="file" accept=".pdf,.png,.jpg,.jpeg,.docx,.xlsx,.zip,.mp4" required />
-      <button type="submit">Upload</button>
-    </form>
-  </section> 
-
-<section aria-labelledby="recent-folders-heading">
-  <h2 id="recent-folders-heading">Recent folders</h2>
-  <ul>
-    <% folders.forEach(folder => { %>
-      <li>
-        <a href="/folders/<%= folder.id %>"><%= folder.folderName %></a>
-        <p><%= folder._files %> files</p>
-      </li>
+      <%- include('partials/modals/editFolder', { folder: folder }) %>
+      <%- include('partials/modals/deleteFolder', { folder: folder }) %>
     <% }) %>
-  </ul>
-  <a href="/folders">View all folders</a>
-</section>
+  </div>
 
-  <section aria-labelledby="recent-files-heading">
-    <h2 id="recent-files-heading">Recent files</h2>
-    <table>
-      <thead>
-        <tr>
-          <th scope="col">Name</th>
-          <th scope="col">Size</th>
-          <th scope="col">Uploaded</th>
-          <th scope="col">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        <!--
-          Loop over recent files. One row example:
-          <tr>
-            <td>
-              <a href="/files/{file.id}">{file.name}</a>
-              <p>in <a href="/folders/{file.folderId}">{file.folderName}</a></p>
-            </td>
-            <td>{file.sizeHuman}</td>
-            <td><time datetime="{file.uploadedAtISO}">{file.uploadedAtHuman}</time></td>
-            <td>
-              <a href="/files/{file.id}/download">Download</a>
-              <button type="button" data-open="file-details-modal">Details</button>
-            </td>
-          </tr>
-        -->
-      </tbody>
-    </table>
-    <a href="/files">View all files</a>
-  </section>
+  <div class="section-title-row">
+    <a href="/files" class="section-title">Files <span class="badge"><%= files?.length || 0 %></span></a>
+    <div class="section-actions">
+      <div class="seg compact">
+        <button class="on" type="button" title="Grid"><svg class="icon"><use href="#i-grid"/></svg></button>
+        <button type="button" title="List"><svg class="icon"><use href="#i-list"/></svg></button>
+      </div>
+      <button class="btn primary" type="button" data-open="add-file-modal"><svg class="icon"><use href="#i-upload"/></svg> Upload file</button>
+    </div>
+  </div>
+  <div class="table">
+    <div class="row head">
+      <div>Name</div>
+      <div class="cell">Size</div>
+      <div class="cell date">Uploaded</div>
+      <div></div>
+    </div>
+
+    <% files?.forEach(file => { %>
+      <div class="row js-file" onclick='openFileModal(<%= JSON.stringify(file) %>)'>
+        <div class="fcell">
+          
+          <div class="badge-file"><img src="https://api.iconify.design/vscode-icons/file-type-<%= file.mimeType.split('/')[0] %>.svg" alt=""></div>
+          <div style="min-width:0">
+            <div class="fname"><%= file.fileName %></div>
+            <div class="fsub">in <%= file.folder?.name || 'Unsorted' %></div>
+          </div>
+        </div>
+        <div class="cell"><%= file.size %></div>
+        <div class="cell date"><%= file.createdAt?.toLocaleDateString() || '' %></div>
+        <div class="actions">
+          <a class="mini" href="/files/<%= file.id %>/download" title="Download"><svg class="icon"><use href="#i-download"/></svg></a>
+          <!-- <button class="mini" type="button" title="Details" ><svg class="icon"><use href="#i-share"/></svg></button> -->
+          <a class="mini" href="/files/<%= file.id %>" title="share"><svg class="icon"><use href="#i-share"/></svg></a>
+          <button class="mini" type="button" title="More"><svg class="icon"><use href="#i-more"/></svg></button>
+        </div>
+      </div>
+    <% }) %>
+  </div>
 </main>
+
+<% if (!(folders && files && locals.session?.user)) { %>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const main = document.querySelector('main');
+
+      if (!main) return;
+      main.querySelectorAll('button, input, select, textarea')
+        .forEach((el) => { el.disabled = true; });
+
+      main.querySelectorAll('a[href]').forEach((a) => {
+        a.removeAttribute('href');
+        a.setAttribute('aria-disabled', 'true');
+      });
+
+      document.getElementById('login-modal')?.showModal();
+    });
+  </script>
+<% } %>
+
+<script>
+    function convertSize(bytes) {
+    if (!Number.isFinite(bytes) || bytes <= 0) return '0 Bytes';
+
+    const units = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+    const unitIndex = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1);
+    const value = bytes / 1024 ** unitIndex;
+    const digits = value >= 10 || unitIndex === 0 ? 0 : 1;
+
+    return `${value.toFixed(digits)} ${units[unitIndex]}`;
+  }
+</script>
