@@ -21,7 +21,11 @@ const authConfig = {
         const ok = await bcrypt.compare(credentials.password, user.password);
         if (!ok) return null;
 
-        return { id: user.id, name: user.username };
+        return {
+          id: user.id,
+          name: user.name,
+          username: user.username,
+        };
       },
     }),
   ],
@@ -32,14 +36,20 @@ const authConfig = {
   },
 
   callbacks: {
-    // puts the id into the session so you can use session.user.id
+    // puts the id and username into the session so you can use session.user.id and session.user.username
     jwt({ token, user }) {
-      if (user) token.id = user.id;
+      if (user) {
+        token.id = user.id;
+        token.name = user.name;
+        token.username = user.username;
+      }
       return token;
     },
 
     session({ session, token }) {
       session.user.id = token.id;
+      session.user.name = token.name ?? session.user?.name;
+      session.user.username = token.username ?? session.user?.username;
       return session;
     },
   },

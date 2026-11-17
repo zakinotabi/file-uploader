@@ -29,6 +29,7 @@ folderName   String
 createdAt    DateTime  @default(now())
 author       User      @relation(fields: [authorId], references: [id]) 
 authorId     Int
+public       Boolean   @default(false)
 files        File[]
 
 }
@@ -44,6 +45,7 @@ folder       Folder    @relation(fields: [folderId], references: [id], onDelete:
 folderId     Int
 author       User      @relation(fields: [authorId], references: [id], onDelete: Cascade)
 authorId     Int                                                                      
+public       Boolean   @default(false)
 }
 
 

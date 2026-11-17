@@ -33,7 +33,7 @@ export async function addUser(req, res) {
     salt: SESSION_COOKIE_NAME,
     token: {
       id: user.id,
-      name: user.username,
+      name: user.name,
       username: user.username,
     },
     maxAge: 30 * 24 * 60 * 60,

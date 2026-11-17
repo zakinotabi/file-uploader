@@ -4,16 +4,16 @@
     Cloudrive
   </div>
 
-  <a  class="nav-item active" href="/"><svg class="icon"><use href="#i-folder"/></svg> My Drive</a>
-  <a class="nav-item" href="/folders"><svg class="icon"><use href="#i-folder"/></svg> All folders</a>
-  <a class="nav-item" href="/files"><svg class="icon"><use href="#i-clock"/></svg> All files</a>
-  <div class="nav-item"><svg class="icon"><use href="#i-star"/></svg> Starred</div>
+  <a class="nav-item <%= currentPath === '/' ? 'active' : '' %>" href="/"><svg class="icon"><use href="#i-drive"/></svg> My Drive</a>
+  <a class="nav-item <%= currentPath === '/folders' ? 'active' : '' %>" href="/folders"><svg class="icon"><use href="#i-folder"/></svg> All folders</a>
+  <a class="nav-item <%= currentPath.startsWith('/files') ? 'active' : '' %>" href="/files"><svg class="icon"><use href="#i-file"/></svg> All files</a>
+  <div class="nav-item"><svg class="icon"><use href="#i-public"/></svg> Shared</div>
   <div class="nav-item"><svg class="icon"><use href="#i-trash"/></svg> Trash</div>
 
   <div class="nav-label">Folders</div>
-  <% if (typeof folders !== 'undefined' && folders && folders.length) { %>
+  <% if ( folders && folders.length) { %>
     <% folders.forEach(folder => { %>
-      <a class="nav-item" href="/folders/<%= folder.id %>">
+      <a class="nav-item <%= currentPath === '/folders/' + folder.id ? 'active' : '' %>" href="/folders/<%= folder.id %>">
         <svg class="icon"><use href="#i-folder"/></svg>
         <span><%= folder.folderName %></span>
       </a>
@@ -22,15 +22,15 @@
 
   <div class="sidebar-foot">
     <div class="storage">
-      <div class="storage-top"><span>Storage</span><span>2.4 / 15 GB</span></div>
-      <div class="meter"><i></i></div>
-      <div class="hint">16% of your plan used</div>
+      <div class="storage-top"><span>Storage</span><span> <%= userStorage|| '110 MB' %>/ 500 MB</span></div>
+     <div class="meter"><i style="width: <%= spaceUsed  %>%;"></i></div>
+      <div class="hint"><%= spaceUsed %> % of your plan used</div>
     </div>
     <div class="user-chip">
       <div class="avatar">AK</div>
       <div>
-        <div class="u-name"><%= locals.session?.user?.name || 'Alex Kim' %></div>
-        <div class="u-mail"><%= locals.session?.user?.email || 'alex@company.com' %></div>
+        <div class="u-name"><%= locals.session?.user?.name || 'user' %></div>
+        <div class="u-mail"><%= locals.session?.user?.username || 'email' %></div>
       </div>
     </div>
   </div>

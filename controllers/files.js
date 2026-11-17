@@ -2,6 +2,7 @@ import multer from 'multer';
 import crypto from 'node:crypto';
 import path from 'node:path';
 import { prisma } from '../lib/prisma.js';
+import { formatFileSize } from './formatFileSize.js';
 
 const storage = multer.diskStorage({
   // WHERE to save the file
@@ -38,27 +39,31 @@ export async function saveFileInDb(req, res) {
 }
 
 export async function getfiles(req, res) {
-  const [files, folders] = await Promise.all([
-    prisma.file.findMany({
-      where: {
-        authorId: Number(res.locals.session.user.id),
-      },
-      include: {
-        folder: true,
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    }),
-    prisma.folder.findMany({
-      where: {
-        authorId: Number(res.locals.session.user.id),
-      },
-      orderBy: {
-        createdAt: 'desc',
-      },
-    }),
-  ]);
+  let files = await prisma.file.findMany({
+    where: {
+      authorId: Number(res.locals.session.user.id),
+    },
+    include: {
+      folder: true,
+    },
+    orderBy: {
+      createdAt: 'asc',
+    },
+  });
+
+  files = files.map((file) => ({
+    ...file,
+    size: formatFileSize(file.size),
+  }));
+
+  const folders = await prisma.folder.findMany({
+    where: {
+      authorId: Number(res.locals.session.user.id),
+    },
+    orderBy: {
+      createdAt: 'asc',
+    },
+  });
 
   res.render('files', { files, folders });
 }

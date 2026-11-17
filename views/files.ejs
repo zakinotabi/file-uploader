@@ -12,39 +12,50 @@
   </div>
   <div class="page-head-actions">
     <div class="seg compact">
-      <button class="on" type="button" title="Grid"><svg class="icon"><use href="#i-grid"/></svg></button>
-      <button type="button" title="List"><svg class="icon"><use href="#i-list"/></svg></button>
+      <button type="button" title="Grid"><svg class="icon"><use href="#i-grid"/></svg></button>
+      <button class="on" type="button" title="List"><svg class="icon"><use href="#i-list"/></svg></button>
     </div>
     <button class="btn primary" type="button" data-open="add-file-modal"><svg class="icon"><use href="#i-upload"/></svg> Upload file</button>
   </div>
 </div>
 
+<% if (files.length !== 0) { %>
 <div class="table">
-  <div class="row head">
-    <div>Name</div>
-    <div class="cell">Size</div>
-    <div class="cell date">Uploaded file</div>
-
-    <div></div>
-  </div>
-
-  <% files?.forEach(file => { %>
-    <div class="row js-file" onclick='openFileModal(<%= JSON.stringify(file) %>)'>
-      <div class="fcell">
-          <div class="badge-file"><img src="https://api.iconify.design/vscode-icons/file-type-<%= file.mimeType.split('/')[0] %>.svg" alt=""></div>
-        <div style="min-width:0">
-          <div class="fname"><%= file.fileName %></div>
-          <div class="fsub"><%= file.folder?.folderName || file.folder?.name || 'Unsorted' %></div>
-        </div>
-      </div>
-      <div class="cell"><%= file.size %></div>
-      <div class="cell date"><%= file.createdAt?.toLocaleDateString() || '' %></div>
-
-      <div class="actions">
-        <a class="mini" href="/files/<%= file.id %>/download" title="Download"><svg class="icon"><use href="#i-download"/></svg></a>
-        <a class="mini" href="/files/<%= file.id %>" title="Details"><svg class="icon"><use href="#i-share"/></svg></a>
-        <button class="mini" type="button" title="More"><svg class="icon"><use href="#i-more"/></svg></button>
-      </div>
-    </div>
-  <% }) %>
+  
+  <table class="file-table">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th class="folder-column">Folder</th>
+        <th class="size-column">Size</th>
+        <th class="date-column">Uploaded</th>
+        <th class="actions-column"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% files?.forEach(file => { %>
+        <tr class="js-file" onclick='openFileModal(<%= JSON.stringify(file) %>)'>
+          <td>
+            <div class="fcell">
+              <div class="badge-file"><img src="https://api.iconify.design/vscode-icons/file-type-<%= file.mimeType.split('/')[0] %>.svg" alt=""></div>
+              <div style="min-width:0">
+                <div class="fname"><%= file.fileName %></div>
+              </div>
+            </div>
+          </td>
+          <td class="folder-column"><%= file.folderName || file.folder?.folderName || 'Unsorted' %></td>
+          <td class="size-column"><%= file.size %></td>
+          <td class="date-column"><%= file.createdAt?.toLocaleDateString() || '' %></td>
+          <td class="actions-column">
+            <div class="actions">
+              <a class="mini" href="/files/<%= file.id %>/download" title="Download"><svg class="icon"><use href="#i-download"/></svg></a>
+              <a class="mini" href="/files/<%= file.id %>" title="Details"><svg class="icon"><use href="#i-share"/></svg></a>
+              <button class="mini" type="button" title="More"><svg class="icon"><use href="#i-more"/></svg></button>
+            </div>
+          </td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+   <% } %>
 </div>

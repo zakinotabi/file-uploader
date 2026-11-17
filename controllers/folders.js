@@ -1,5 +1,6 @@
 import { dlopen } from 'node:process';
 import { prisma } from '../lib/prisma.js';
+import { formatFileSize } from './formatFileSize.js';
 
 export async function setNewFolder(req, res) {
   if (!req.body.name) return res.status(400).send('No name');
@@ -12,7 +13,7 @@ export async function setNewFolder(req, res) {
 
   res.redirect('/');
 }
-// we still need to add size for each folder to show <%= folder.totalSize %>
+
 export async function getFolders(req, res) {
   const folders = await prisma.folder.findMany({
     where: {
@@ -28,7 +29,7 @@ export async function getFolders(req, res) {
   res.render('folders', { folders: folders });
 }
 export async function getSingleFolder(req, res) {
-  const files = await prisma.file.findMany({
+  let files = await prisma.file.findMany({
     where: {
       folderId: Number(req.params.id),
       authorId: Number(res.locals.session.user.id),
@@ -41,16 +42,22 @@ export async function getSingleFolder(req, res) {
       },
     },
   });
-  //we need to link that to sidebar only
+
+  files = files.map((file) => ({
+    ...file,
+    size: formatFileSize(file.size),
+  }));
+
   const folders = await prisma.folder.findMany({
     where: {
       authorId: Number(res.locals.session.user.id),
     },
     orderBy: {
-      createdAt: 'desc',
+      createdAt: 'asc',
     },
   });
-  const folderName = files[0]?.folder?.folderName || '';
+  const targetFolder = folders.find((folder) => folder.id === Number(req.params.id));
+  const folderName = files[0]?.folder?.folderName || targetFolder.folderName || '';
   res.render('files', { files: files, folders: folders, currentFolder: folderName });
 }
 
