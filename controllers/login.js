@@ -12,7 +12,11 @@ export default async function callGetSession(req, res, next) {
     res.locals.spaceUsed = results.percent;
     res.locals.userStorage = results.used;
   } else {
+    const loginFailed = req.query.error === 'CredentialsSignin';
+    res.locals.loginError = loginFailed ? 'Invalid username or password. Please try again.' : null;
+    res.locals.signupError = null;
     res.locals.spaceUsed = '15';
+    res.locals.userStorage = '110 MB';
   }
 
   next();

@@ -3,6 +3,7 @@ import { formatFileSize } from './formatFileSize.js';
 
 export async function renderHome(req, res) {
   let folders, files;
+
   if (res.locals.session?.user.id) {
     folders = await prisma.folder.findMany({
       where: { authorId: Number(res.locals.session.user.id) },

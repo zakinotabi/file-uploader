@@ -11,6 +11,10 @@
     <!-- Redirect after successful login -->
     <input type="hidden" name="callbackUrl" value="/" />
 
+    <% if (locals.loginError) { %>
+      <p class="login-error" role="alert"><%= locals.loginError %></p>
+    <% } %>
+
     <p>
       <label for="login-username">Username</label>
       <input id="login-username" name="username" type="text" autocomplete="off" required />
@@ -34,3 +38,13 @@
 
   <p class="modal-switch">No account? <button type="button" class="modal-switch-link" data-switch-modal="signup-modal">Create one</button></p>
 </dialog>
+<% if (locals.loginError) { %>
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const loginModal = document.getElementById("login-modal");
+      loginModal.showModal();
+      const signupModal = document.getElementById("signup-modal");
+      signupModal.close();
+    });
+  </script>
+<% } %>

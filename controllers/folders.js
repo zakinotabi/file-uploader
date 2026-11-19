@@ -60,6 +60,33 @@ export async function getSingleFolder(req, res) {
   const folderName = files[0]?.folder?.folderName || targetFolder.folderName || '';
   res.render('files', { files: files, folders: folders, currentFolder: folderName });
 }
+export async function getSharedFolder(req, res) {
+  let files = await prisma.file.findMany({
+    where: {
+      folderId: Number(req.params.id),
+      public: true,
+      folder: {
+        is: {
+          public: true,
+        },
+      },
+    },
+    include: {
+      folder: {
+        select: {
+          folderName: true,
+        },
+      },
+    },
+  });
+
+  files = files.map((file) => ({
+    ...file,
+    size: formatFileSize(file.size),
+  }));
+
+  res.render('sharedFiles', { layout: false, dashboard: false, shared: true, files: files, currentFolder: files[0]?.folder?.folderName });
+}
 
 export async function setFolderName(req, res) {
   if (!req.body.name) return res.status(400).send('No name');

@@ -67,6 +67,33 @@ export async function getfiles(req, res) {
 
   res.render('files', { files, folders });
 }
+export async function getsharedfile(req, res) {
+  let file = await prisma.file.findFirst({
+    where: {
+      id: Number(req.params.id),
+      public: true,
+      folder: {
+        is: {
+          public: true,
+        },
+      },
+    },
+  });
+
+  if (!file) {
+    return res.status(404).send('Shared file not found');
+  }
+
+  file.size = formatFileSize(file.size);
+
+  res.render('sharedFiles', {
+    layout: false,
+    dashboard: false,
+    shared: true,
+    files: [file],
+    currentFolder: '',
+  });
+}
 
 export async function downloadFile(req, res) {
   // 1. Get the file record from the database using Prisma

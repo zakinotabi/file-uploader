@@ -45,8 +45,10 @@
       <svg class="icon"><use href="#i-download" /></svg> Download
     </a>
 
+    <% if (!locals.shared) { %>
     <button type="button" id="modal-file-delete-button" class="btn danger" title="Delete file" data-open="delete-file-modal">
       <svg class="icon"><use href="#i-trash" /></svg>
     </button>
+    <% } %>
   </div>
 </aside>

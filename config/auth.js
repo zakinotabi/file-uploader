@@ -5,6 +5,10 @@ import bcrypt from 'bcrypt';
 import { prisma } from '../lib/prisma.js';
 
 const authConfig = {
+  pages: {
+    signIn: '/',
+  },
+
   providers: [
     Credentials({
       credentials: {
@@ -29,6 +33,14 @@ const authConfig = {
       },
     }),
   ],
+
+  //clean console
+  logger: {
+    error(error) {
+      if (error.type === 'CredentialsSignin') return; // ignore expected failed logins
+      console.error(error);
+    },
+  },
 
   session: {
     strategy: 'jwt',

@@ -15,7 +15,9 @@
       <button type="button" title="Grid"><svg class="icon"><use href="#i-grid"/></svg></button>
       <button class="on" type="button" title="List"><svg class="icon"><use href="#i-list"/></svg></button>
     </div>
+    <% if (!locals.shared) { %>
     <button class="btn primary" type="button" data-open="add-file-modal"><svg class="icon"><use href="#i-upload"/></svg> Upload file</button>
+    <% } %>
   </div>
 </div>
 

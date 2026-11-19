@@ -7,16 +7,29 @@
   <form action="/signup" method="post">
     <input type="hidden" name="csrfToken" id="signup-csrf" />
 
+    <% if (locals.signupError && locals.signupError.name) { %>
+      <p class="login-error" role="alert"><%= locals.signupError.name %></p>
+    <% } %>
+
     <p>
       <label for="signup-name">Full name</label>
       <input id="signup-name" name="name" type="text" autocomplete="off" required />
     </p>
 
+    <% if (locals.signupError && locals.signupError.username) { %>
+      <p class="login-error" role="alert"><%= locals.signupError.username %></p>
+    <% } %>
     <p>
       <label for="signup-username">Username</label>
       <input id="signup-username" name="username" type="username" autocomplete="off" required />
     </p>
 
+    <% if (locals.signupError && locals.signupError.password) { %>
+      <p class="login-error" role="alert"><%= locals.signupError.password %></p>
+    <% } %>
+    <% if (locals.signupError && locals.signupError.confirmPassword) { %>
+      <p class="login-error" role="alert"><%= locals.signupError.confirmPassword %></p>
+    <% } %>
     <p>
       <label for="signup-password">Password</label>
       <input id="signup-password" name="password" type="password" autocomplete="new-password" minlength="5" required />
