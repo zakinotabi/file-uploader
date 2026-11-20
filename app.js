@@ -14,6 +14,11 @@ import folderRouter from './routes/foldersRouter.js';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// this is fo vercel deployment
+const isProduction = process.env.NODE_ENV === 'production';
+// we tell Express to trust Vercel's proxy
+app.set('trust proxy', 1);
+
 app.set('view engine', 'ejs');
 app.set('views', './views');
 app.use(express.static('public'));
