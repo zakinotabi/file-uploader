@@ -72,6 +72,13 @@
         </tr>
       </thead>
       <tbody>
+        <% if (!(folders && files && locals.session?.user)) { %>
+    <tr class="demo-row">
+      <td colspan="5">
+        This is just a preview of how the app looks inside. Log in to upload and manage your files.
+      </td>
+    </tr>
+      <% } %>
         <% files?.forEach(file => { %>
           <tr class="js-file file-modal-open" data-file-id="<%= file.id %>">
             <td>

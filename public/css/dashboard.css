@@ -1,7 +1,13 @@
 @import './folders.css';
 @import './files.css';
 
-/* Dashboard-specific page styles */
-.page-shell {
-  /* reserved for dashboard content */
+.demo-row td {
+  text-align: center;
+  padding: 2rem 1rem;
+  background: #f3dede;
+  color: var(--accent);
+  font-style: italic;
+  border-left: 4px solid #b85c5c;
+  font-weight: 450;
+  letter-spacing: 1px;
 }
