@@ -22,16 +22,19 @@
         <a class="folder-card-link" href="/folders/<%= folder.id %>">
           <div class="folder-ico"><svg class="icon"><use href="#i-folder"/></svg></div>
           <div style="min-width:0">
-            <div class="f-name"><%= folder.folderName %></div>
+            <div class="f-name"><%= folder.folderName %><% if (folder.public) { %><svg class="icon folder-public-icon"><use href="#i-public" /></svg><% } %></div>
             <div class="f-meta"><%= folder.files?.length || 0 %> files</div>
           </div>
         </a>
 
         <div class="folder-actions">
+          <button class="mini folder-action folder-share-button" type="button" data-folder-id="<%= folder.id %>" data-open="share-folder-modal-<%= folder.id %>" title="Share folder">
+            <svg class="icon"><use href="#i-share" /></svg>
+          </button>
           <button class="mini folder-action" type="button" data-open="edit-folder-modal-<%= folder.id %>" title="Edit folder">
             <svg class="icon"><use href="#i-edit" /></svg>
           </button>
-          <% if (folder.id > 1) {%>
+          <% if (!folder.isRoot) {%>
             <button class="mini folder-action danger" type="button" data-open="delete-folder-modal-<%= folder.id %>" title="Delete folder">
             <svg class="icon"><use href="#i-trash" /></svg>
           </button>
@@ -40,6 +43,7 @@
         </div>
       </div>
 
+      <%- include('partials/modals/shareFolder', { folder: folder }) %>
       <%- include('partials/modals/editFolder', { folder: folder }) %>
       <%- include('partials/modals/deleteFolder', { folder: folder }) %>
     <% }) %>
@@ -63,15 +67,16 @@
           <th>Name</th>
           <th class="size-column">Size</th>
           <th class="date-column">Uploaded</th>
+          <th class="visibility-column">Visibility</th>
           <th class="actions-column"></th>
         </tr>
       </thead>
       <tbody>
         <% files?.forEach(file => { %>
-          <tr class="js-file" onclick='openFileModal(<%= JSON.stringify(file) %>)'>
+          <tr class="js-file file-modal-open" data-file-id="<%= file.id %>">
             <td>
               <div class="fcell">
-                <div class="badge-file"><img src="https://api.iconify.design/vscode-icons/file-type-<%= file.mimeType.split('/')[0] %>.svg" alt=""></div>
+                <div class="badge-file"><img src="https://icon-forge.el3zahaby.workers.dev/file-icon?ext=<%= file.fileName.split('.')[1] || "file"%>" alt=""></div>
                 <div style="min-width:0">
                   <div class="fname"><%= file.fileName %></div>
                   <div class="fsub"><%= file.folder?.folderName || 'Unsorted' %></div>
@@ -80,10 +85,16 @@
             </td>
             <td class="size-column"><%= file.size %></td>
             <td class="date-column"><%= file.createdAt?.toLocaleDateString() || '' %></td>
+            <td class="visibility-column">
+              <span class="visibility-status <%= file.public ? 'public' : 'private' %>">
+                <% if (file.public) { %><svg class="icon"><use href="#i-public" /></svg><% } %>
+                <%= file.public ? 'Public' : 'Private' %>
+              </span>
+            </td>
             <td class="actions-column">
-              <div class="actions">
+              <div class="actions" onclick="event.stopPropagation()">
                 <a class="mini" href="/files/<%= file.id %>/download" title="Download"><svg class="icon"><use href="#i-download"/></svg></a>
-                <button class="mini" type="button" title="Share"><svg class="icon"><use href="#i-share"/></svg></button>
+                <button class="mini file-details-button" type="button" data-file-id="<%= file.id %>" title="Details"><svg class="icon"><use href="#i-share"/></svg></button>
                 <button class="mini" type="button" title="More"><svg class="icon"><use href="#i-more"/></svg></button>
               </div>
             </td>
@@ -92,6 +103,10 @@
       </tbody>
     </table>
   </div>
+
+  <% files?.forEach(file => { %>
+    <%- include('partials/modals/showFile', { file, shared: false }) %>
+  <% }) %>
 </main>
 
 <% if (!(folders && files && locals.session?.user)) { %>
@@ -116,4 +131,3 @@
     });
   </script>
 <% } %>
-

@@ -4,9 +4,11 @@ import * as filesController from '../controllers/files.js';
 const filesRouter = Router();
 
 filesRouter.get('/', filesController.getfiles);
+filesRouter.get('/shared', filesController.getSharedFiles);
 filesRouter.post('/upload', filesController.upload.single('file'), filesController.saveFileInDb);
 filesRouter.get('/shared/:id', filesController.getsharedfile);
-filesRouter.post('/:id/download', filesController.downloadFile);
+filesRouter.post('/share/:id', filesController.setFilePublic);
+filesRouter.get('/:id/download', filesController.downloadFile);
 filesRouter.post('/:id/delete', filesController.deleteFile);
 
 export default filesRouter;

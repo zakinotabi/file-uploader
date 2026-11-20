@@ -1,0 +1,134 @@
+.table {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.table .file-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  background: transparent;
+}
+.table .file-table th,
+.table .file-table td {
+  padding: 11px 16px;
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid #f0f1f5;
+}
+.table .file-table thead th {
+  padding: 9px 16px;
+  background: var(--surface-2);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted-2);
+}
+.table .file-table tbody tr:last-child td {
+  border-bottom: none;
+}
+.table .file-table tbody tr {
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+.table .file-table tbody tr:hover {
+  background: #fafbfd;
+}
+.table .file-table tbody tr:hover .actions {
+  opacity: 1;
+}
+.table .file-table td:not(:first-child) {
+  font-size: 12.5px;
+  color: var(--muted);
+}
+.table .file-table .folder-column {
+  width: 150px;
+}
+.table .file-table .size-column {
+  width: 96px;
+}
+.table .file-table .date-column {
+  width: 132px;
+}
+.table .file-table .actions-column {
+  width: 112px;
+}
+.table .file-table .visibility-column {
+  width: 110px;
+}
+.table .file-table td:first-child {
+  min-width: 0;
+  overflow: hidden;
+}
+.table .file-table .folder-column {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fcell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+.fname {
+  font-size: 13.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.fsub {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin-top: 1px;
+}
+.badge-file {
+  width: 34px;
+  height: 34px;
+  flex: none;
+  border-radius: 9px;
+  display: grid;
+  place-items: center;
+  font-size: 9.5px;
+  font-weight: 800;
+}
+.badge-file img {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+}
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 2px;
+  opacity: 0.55;
+  transition: opacity 0.15s ease;
+}
+.visibility-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+}
+.visibility-status.public {
+  color: var(--accent-green);
+}
+.visibility-status.private {
+  color: var(--muted);
+}
+.visibility-status .icon {
+  width: 14px;
+  height: 14px;
+}
+
+@media (max-width: 900px) {
+  .table .file-table .folder-column,
+  .table .file-table .date-column {
+    display: none;
+  }
+}

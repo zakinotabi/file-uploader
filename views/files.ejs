@@ -15,7 +15,7 @@
       <button type="button" title="Grid"><svg class="icon"><use href="#i-grid"/></svg></button>
       <button class="on" type="button" title="List"><svg class="icon"><use href="#i-list"/></svg></button>
     </div>
-    <% if (!locals.shared) { %>
+    <% if (!locals.shared && !locals.sharedCollection) { %>
     <button class="btn primary" type="button" data-open="add-file-modal"><svg class="icon"><use href="#i-upload"/></svg> Upload file</button>
     <% } %>
   </div>
@@ -31,15 +31,18 @@
         <th class="folder-column">Folder</th>
         <th class="size-column">Size</th>
         <th class="date-column">Uploaded</th>
+        <% if (!locals.shared) { %>
+        <th class="visibility-column">Visibility</th>
+        <% } %>
         <th class="actions-column"></th>
       </tr>
     </thead>
     <tbody>
       <% files?.forEach(file => { %>
-        <tr class="js-file" onclick='openFileModal(<%= JSON.stringify(file) %>)'>
+        <tr class="js-file file-modal-open" data-file-id="<%= file.id %>">
           <td>
             <div class="fcell">
-              <div class="badge-file"><img src="https://api.iconify.design/vscode-icons/file-type-<%= file.mimeType.split('/')[0] %>.svg" alt=""></div>
+              <div class="badge-file"><img src="https://icon-forge.el3zahaby.workers.dev/file-icon?ext=<%= file.fileName.split('.')[1] || "file"%>" alt=""></div>
               <div style="min-width:0">
                 <div class="fname"><%= file.fileName %></div>
               </div>
@@ -48,10 +51,18 @@
           <td class="folder-column"><%= file.folderName || file.folder?.folderName || 'Unsorted' %></td>
           <td class="size-column"><%= file.size %></td>
           <td class="date-column"><%= file.createdAt?.toLocaleDateString() || '' %></td>
+          <% if (!locals.shared) { %>
+          <td class="visibility-column">
+            <span class="visibility-status <%= file.public ? 'public' : 'private' %>">
+              <% if (file.public) { %><svg class="icon"><use href="#i-public" /></svg><% } %>
+              <%= file.public ? 'Public' : 'Private' %>
+            </span>
+          </td>
+          <% } %>
           <td class="actions-column">
-            <div class="actions">
+            <div class="actions" onclick="event.stopPropagation()">
               <a class="mini" href="/files/<%= file.id %>/download" title="Download"><svg class="icon"><use href="#i-download"/></svg></a>
-              <a class="mini" href="/files/<%= file.id %>" title="Details"><svg class="icon"><use href="#i-share"/></svg></a>
+              <button class="mini file-details-button" type="button" data-file-id="<%= file.id %>" title="Details"><svg class="icon"><use href="#i-share"/></svg></button>
               <button class="mini" type="button" title="More"><svg class="icon"><use href="#i-more"/></svg></button>
             </div>
           </td>
@@ -61,3 +72,7 @@
   </table>
    <% } %>
 </div>
+
+<% files?.forEach(file => { %>
+  <%- include('partials/modals/showFile', { file, shared: Boolean(locals.shared || locals.sharedCollection) }) %>
+<% }) %>

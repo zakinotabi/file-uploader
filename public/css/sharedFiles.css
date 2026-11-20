@@ -1,0 +1,20 @@
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 26px 28px 60px;
+}
+.file-sharing {
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+}
+.file-sharing-label {
+  margin-bottom: 8px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+.visibility-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}

@@ -65,18 +65,17 @@ export async function getfiles(req, res) {
     },
   });
 
-  res.render('files', { files, folders });
+  res.render('files', { files, folders, pageStyle: 'files' });
 }
 export async function getsharedfile(req, res) {
   let file = await prisma.file.findFirst({
     where: {
       id: Number(req.params.id),
       public: true,
-      folder: {
-        is: {
-          public: true,
-        },
-      },
+    },
+    include: {
+      folder: true,
+      author: true,
     },
   });
 
@@ -91,18 +90,66 @@ export async function getsharedfile(req, res) {
     dashboard: false,
     shared: true,
     files: [file],
-    currentFolder: '',
+    currentFolder: file.folder?.folderName || '',
   });
 }
+export async function setFilePublic(req, res) {
+  const fileId = Number(req.params.id);
+  const isPublic = req.body.public === true || req.body.public === 'true';
 
-export async function downloadFile(req, res) {
-  // 1. Get the file record from the database using Prisma
-  const file = await prisma.file.findUnique({
+  const file = await prisma.file.findFirst({
     where: {
-      id: Number(req.params.id),
+      id: fileId,
       authorId: Number(res.locals.session.user.id),
     },
   });
+
+  if (!file) {
+    return res.status(404).send('File not found');
+  }
+
+  await prisma.file.update({
+    where: {
+      id: fileId,
+      authorId: Number(res.locals.session.user.id),
+    },
+    data: { public: isPublic },
+  });
+
+  // Only matters if the file lives in a folder
+  if (file.folderId) {
+    // Is any file in THIS folder still public?
+    const publicFile = await prisma.file.findFirst({
+      where: {
+        folderId: file.folderId,
+        authorId: Number(res.locals.session.user.id),
+        public: true,
+      },
+    });
+
+    await prisma.folder.update({
+      where: {
+        id: file.folderId,
+        authorId: Number(res.locals.session.user.id),
+      },
+      data: { public: Boolean(publicFile) },
+    });
+  }
+
+  res.redirect(req.get('Referrer') || '/');
+}
+
+export async function downloadFile(req, res) {
+  const userId = Number(res.locals.session?.user?.id) || null;
+  const fileId = Number(req.params.id);
+
+  const file = await prisma.file.findFirst({
+    where: userId ? { id: fileId, authorId: userId } : { id: fileId, public: true },
+  });
+
+  if (!file) {
+    return res.status(404).send('File not found');
+  }
 
   // 2. Get the physical file path on the server
   const filePath = path.join(process.cwd(), 'public', 'upload', file.storageKey);
@@ -112,12 +159,52 @@ export async function downloadFile(req, res) {
 }
 
 export async function deleteFile(req, res) {
-  const folder = await prisma.folder.delete({
+  const folder = await prisma.file.delete({
     where: {
       id: Number(req.params.id),
       authorId: Number(res.locals.session.user.id),
     },
   });
 
-  res.redirect('/files');
+  res.redirect(req.get('Referrer') || '/');
+}
+
+export async function getSharedFiles(req, res) {
+  if (!res.locals.session?.user?.id) {
+    return res.redirect('/');
+  }
+
+  let files = await prisma.file.findMany({
+    where: {
+      authorId: Number(res.locals.session.user.id),
+      public: true,
+    },
+    include: {
+      folder: true,
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  });
+
+  files = files.map((file) => ({
+    ...file,
+    size: formatFileSize(file.size),
+  }));
+
+  const folders = await prisma.folder.findMany({
+    where: {
+      authorId: Number(res.locals.session.user.id),
+    },
+    orderBy: {
+      createdAt: 'asc',
+    },
+  });
+
+  res.render('files', {
+    files,
+    folders,
+    sharedCollection: true,
+    pageStyle: 'files',
+  });
 }

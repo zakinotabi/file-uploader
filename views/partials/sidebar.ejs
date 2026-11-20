@@ -1,13 +1,13 @@
 <aside class="sidebar">
   <div class="brand">
-    <div class="brand-mark"><svg class="icon"><use href="#i-cloud"/></svg></div>
-    Cloudrive
+    <div class="brand-mark"><svg class="icon"><use href="#i-rain-cloud-big"/></svg></div>
+    Btfsplk Cloud
   </div>
 
   <a class="nav-item <%= currentPath === '/' ? 'active' : '' %>" href="/"><svg class="icon"><use href="#i-drive"/></svg> My Drive</a>
   <a class="nav-item <%= currentPath === '/folders' ? 'active' : '' %>" href="/folders"><svg class="icon"><use href="#i-folder"/></svg> All folders</a>
-  <a class="nav-item <%= currentPath.startsWith('/files') ? 'active' : '' %>" href="/files"><svg class="icon"><use href="#i-file"/></svg> All files</a>
-  <div class="nav-item"><svg class="icon"><use href="#i-public"/></svg> Shared</div>
+  <a class="nav-item <%= currentPath === '/files' ? 'active' : '' %>" href="/files"><svg class="icon"><use href="#i-file"/></svg> All files</a>
+  <a class="nav-item <%= currentPath === '/files/shared' ? 'active' : '' %>" href="/files/shared"><svg class="icon"><use href="#i-public"/></svg> Shared</a>
   <div class="nav-item"><svg class="icon"><use href="#i-trash"/></svg> Trash</div>
 
   <div class="nav-label">Folders</div>
@@ -16,6 +16,7 @@
       <a class="nav-item <%= currentPath === '/folders/' + folder.id ? 'active' : '' %>" href="/folders/<%= folder.id %>">
         <svg class="icon"><use href="#i-folder"/></svg>
         <span><%= folder.folderName %></span>
+        <% if (folder.public) { %><svg class="icon folder-public-icon"><use href="#i-public" /></svg><% } %>
       </a>
     <% }) %>
   <% } %>
@@ -27,7 +28,7 @@
       <div class="hint"><%= spaceUsed %> % of your plan used</div>
     </div>
     <div class="user-chip">
-      <div class="avatar">AK</div>
+      <div class="avatar"><img src="https://api.dicebear.com/10.x/initials/svg?seed=<%= locals.session?.user?.name || 'user'  %>&backgroundColor=6b705c,a5a58d,b98b73,7c9082,8e9aaf,9c6b58" alt=""></div> 
       <div>
         <div class="u-name"><%= locals.session?.user?.name || 'user' %></div>
         <div class="u-mail"><%= locals.session?.user?.username || 'email' %></div>

@@ -1,0 +1,499 @@
+dialog {
+  width: min(100%, 392px);
+  padding: 0;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--surface);
+  color: var(--text);
+  box-shadow: var(--shadow);
+}
+dialog::backdrop {
+  background: rgba(16, 24, 40, 0.34);
+  backdrop-filter: blur(1px);
+}
+dialog[open] {
+  display: grid;
+}
+dialog > header {
+  padding: 2rem 2rem 0.5rem;
+}
+dialog .auth-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 16px;
+  margin-bottom: 26px;
+}
+dialog h2 {
+  margin: 0 0 6px;
+  font-size: 23px;
+}
+dialog header p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13.5px;
+}
+dialog form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 1rem 2rem 1.25rem;
+}
+dialog .field,
+dialog p {
+  margin: 0;
+}
+dialog .form-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  padding: 0.75rem 2rem 1rem;
+}
+dialog .form-actions .dialog-submit,
+dialog .form-actions .dialog-cancel {
+  flex: 1;
+  width: 100%;
+}
+dialog label {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #40454e;
+  margin-bottom: 6px;
+}
+dialog input[type='text'],
+dialog input[type='email'],
+dialog input[type='password'],
+dialog input[type='username'],
+dialog select {
+  width: 100%;
+  padding: 11px 13px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-2);
+  outline: none;
+  transition: 0.15s ease;
+}
+dialog input:focus,
+dialog select:focus {
+  border-color: var(--accent-soft);
+  background: #fff;
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+dialog .btn,
+dialog .dialog-submit,
+dialog .dialog-cancel,
+dialog .ghost-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 14px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+  font-weight: 600;
+  font-size: 13.5px;
+}
+dialog .dialog-submit,
+dialog .btn-primary {
+  width: 100%;
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(79, 70, 229, 0.28);
+}
+dialog .dialog-submit:hover,
+dialog .btn-primary:hover {
+  background: var(--accent-green);
+}
+dialog .dialog-cancel,
+dialog .ghost-btn {
+  background: transparent;
+  border-color: var(--border);
+  color: var(--text);
+}
+.dialog-cancel:hover {
+  background-color: var(--bg);
+}
+.login-error {
+  padding: 10px 12px;
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  background: #fef2f2;
+  color: #b91c1c;
+  font-size: 13px;
+}
+
+.dialog-close {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 22px;
+  line-height: 1;
+}
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(16, 24, 40, 0.34);
+  backdrop-filter: blur(1px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s ease;
+  z-index: 40;
+}
+.overlay.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+.drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 396px;
+  max-width: 92vw;
+  z-index: 50;
+  background: var(--surface);
+  border-left: 1px solid var(--border);
+  box-shadow: -20px 0 50px rgba(16, 24, 40, 0.1);
+  transform: translateX(102%);
+  transition: transform 0.26s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+}
+.drawer.open {
+  transform: translateX(0);
+}
+.drawer-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+}
+.drawer-head h3 {
+  margin: 0;
+  font-size: 15px;
+}
+.drawer-head .icon-btn {
+  margin-left: auto;
+}
+.drawer-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 22px 20px;
+}
+.thumb {
+  height: 148px;
+  border-radius: 14px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 20px;
+  background: #e8e8e868;
+  border: 1px solid #e6e6f7;
+}
+.thumb .badge-file {
+  width: 56px;
+  height: 56px;
+  border-radius: 15px;
+  font-size: 14px;
+}
+.drawer-file-name {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  word-break: break-word;
+}
+.drawer-file-sub {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+.meta-list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+.meta {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 11px 0;
+  border-bottom: 1px solid #f1f2f6;
+  font-size: 13px;
+}
+.meta:last-child {
+  border-bottom: none;
+}
+.meta dt {
+  color: var(--muted);
+}
+.meta dd {
+  margin: 0;
+  font-weight: 600;
+  text-align: right;
+  word-break: break-word;
+}
+.meta dd a {
+  color: var(--accent);
+}
+.drawer-foot {
+  display: flex;
+  gap: 10px;
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+}
+.drawer-foot .btn {
+  flex: 1;
+  justify-content: center;
+}
+.file-delete-form {
+  margin: 0;
+}
+.file-delete-form .btn {
+  width: 48px;
+  min-width: 48px;
+  padding-inline: 0;
+}
+
+.visibility-meta {
+  align-items: center;
+}
+.visibility-meta dd {
+  flex: 1;
+  max-width: 220px;
+}
+.visibility-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 6px;
+}
+.visibility-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 7px 10px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    color 0.15s ease;
+}
+.visibility-option.active {
+  border-color: var(--bg);
+  background: var(--accent-soft);
+  color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+.visibility-option .icon {
+  width: 15px;
+  height: 15px;
+}
+.share-link-slot {
+  height: 0;
+  margin-top: 0;
+  overflow: hidden;
+  transition:
+    height 0.22s ease,
+    margin-top 0.22s ease;
+}
+.share-link-slot.is-visible {
+  height: 25px;
+  margin-top: 10px;
+}
+.share-link-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 25px;
+  box-sizing: border-box;
+  padding: 8px 10px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  background: var(--surface-2);
+}
+.share-link-wrap[hidden] {
+  display: none;
+}
+.share-link-wrap span {
+  flex: none;
+  color: var(--muted);
+  font-size: 10.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.share-link-wrap a {
+  min-width: 0;
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.drawer-body > #modal-file-save-share {
+  width: 100%;
+  min-height: 40px;
+}
+
+.modal-switch {
+  margin: 12px 0 10px;
+  text-align: center;
+  color: var(--text);
+  font-size: 13px;
+}
+.modal-switch-link {
+  outline: none;
+  display: inline;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--accent);
+  font-weight: 700;
+  cursor: pointer;
+}
+.modal-switch-link:hover {
+  text-decoration: underline;
+}
+.dialog-submit.danger {
+  background: #dc2626;
+  border-color: #dc2626;
+  box-shadow: 0 2px 6px rgba(220, 38, 38, 0.22);
+}
+.folder-share-body {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 1rem 2rem 0.5rem;
+}
+.folder-share-name {
+  font-size: 14px;
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+#share-folder-modal-1 {
+  overflow: hidden;
+}
+/* File details drawer */
+.file-dialog {
+  position: fixed;
+  inset: 0 0 0 auto;
+  width: 396px;
+  max-width: 92vw;
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-left: 1px solid var(--border);
+  border-radius: 0;
+  background: var(--surface);
+  box-shadow: -20px 0 50px rgba(16, 24, 40, 0.1);
+}
+.file-dialog[open] {
+  display: flex;
+}
+.file-dialog-inner {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.file-dialog .drawer-head {
+  flex: none;
+}
+.file-dialog .drawer-body {
+  min-height: 0;
+}
+.file-dialog .thumb .badge-file img {
+  width: 56px;
+  height: 56px;
+  border-radius: 15px;
+}
+.file-dialog form.visibility-form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 20px 0 0;
+  padding: 18px 0 0;
+  border-top: 1px solid #f1f2f6;
+}
+.file-dialog .visibility-label {
+  color: var(--text);
+  font-size: 12.5px;
+  font-weight: 700;
+}
+.file-dialog .visibility-option {
+  margin: 0;
+}
+.file-dialog .drawer-foot form {
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+.file-dialog .drawer-foot form .btn {
+  width: 48px;
+  min-width: 48px;
+  height: 40px;
+  padding: 0;
+}
+.file-dialog .visibility-meta {
+  align-items: flex-start;
+}
+.file-dialog .visibility-meta dd {
+  max-width: 220px;
+}
+.file-dialog form.visibility-form {
+  width: 220px;
+  gap: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.file-dialog .visibility-option {
+  margin: 0;
+}
+.file-dialog .file-share-link-slot {
+  height: 0;
+  margin-top: 0;
+  overflow: hidden;
+  transition:
+    height 0.22s ease,
+    margin-top 0.22s ease;
+}
+.file-dialog .file-share-link-slot.is-visible {
+  height: 25px;
+  margin-top: 8px;
+}
+.file-dialog .file-save-share {
+  width: 100%;
+  min-height: 38px;
+  margin-top: 8px;
+}
+.flex {
+  display: flex;
+  align-items: flex-start;
+  gap: 5px;
+}
+@media (max-width: 520px) {
+  .file-dialog {
+    width: 100%;
+    max-width: 100%;
+  }
+}

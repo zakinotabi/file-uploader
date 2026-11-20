@@ -10,7 +10,7 @@
       <button type="button" class="btn primary" data-open="signup-modal">Sign up</button>
     <% } else { %>
       <span class="user-inline">Signed in as <strong><%= locals.session.user.name %></strong></span>
-      <button type="button" class="btn" id="logout-button">Log out</button>
+      <button type="button" class="logout-btn" id="logout-button">Log out</button>
 
       <form id="logout-form" action="/auth/signout" method="post" hidden>
         <input type="hidden" name="csrfToken" id="logout-csrf">
@@ -18,11 +18,12 @@
       </form>
     <% } %>
 
-    <div class="avatar">AK</div>
+<div class="avatar"><img src="https://api.dicebear.com/10.x/initials/svg?seed=<%= locals.session?.user?.name || 'user'  %>&backgroundColor=6b705c,a5a58d,b98b73,7c9082,8e9aaf,9c6b58" alt=""></div> 
+
   </div>
 </header>
 
-<script>
+<script> 
   let csrfTokenPromise;
 
   const getCsrfToken = () =>
@@ -82,6 +83,16 @@
     const modalId = openButton.dataset.open;
     const modal = document.getElementById(modalId);
     if (!modal) return;
+
+    if (modalId === 'delete-file-modal') {
+      const fileId = openButton.dataset.fileId;
+      const fileName = openButton.dataset.fileName;
+      document.getElementById('delete-file-name').textContent = fileName || 'this file';
+      document.getElementById('delete-file-form').action = `/files/${fileId}/delete`;
+
+      const fileDialog = openButton.closest('dialog');
+      fileDialog?.close();
+    }
 
     if (modalId === 'login-modal') {
       document.getElementById('login-csrf').value = await getCsrfToken();

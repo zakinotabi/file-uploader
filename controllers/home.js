@@ -28,5 +28,5 @@ export async function renderHome(req, res) {
     }));
   }
   // const user = res.locals.user;
-  res.render('dashboard', { folders: folders, files: files });
+  res.render('dashboard', { folders: folders, files: files, pageStyle: 'dashboard' });
 }

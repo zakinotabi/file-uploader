@@ -1,0 +1,7 @@
+@import './folders.css';
+@import './files.css';
+
+/* Dashboard-specific page styles */
+.page-shell {
+  /* reserved for dashboard content */
+}

@@ -4,7 +4,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Btfsplk Cloud</title>
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/css/base.css" />
+    <link rel="stylesheet" href="/css/layout.css" />
+    <link rel="stylesheet" href="/css/modals.css" />
+    <link rel="stylesheet" href="/css/<%= locals.pageStyle || 'dashboard' %>.css" />
   </head>
   <body>
     <%- include('partials/icons') %>
@@ -21,71 +24,136 @@
       </div>
 
       <%- include('partials/modals/login') %> <%- include('partials/modals/signup') %> <%- include('partials/modals/addFile') %> <%-
-      include('partials/modals/addFolder') %> <%- include('partials/modals/deleteFile') %> <%- include('partials/modals/showFile') %> <%-
-      include('partials/footer') %>
+      include('partials/modals/addFolder') %> <%- include('partials/modals/deleteFile') %> <%- include('partials/footer') %>
     </div>
   </body>
   <script>
-    function openFileModal(file) {
-      const drawer = document.getElementById('file-details-modal');
-      const overlay = document.getElementById('file-details-overlay');
-      if (!drawer || !overlay) return;
+    // set the file dialog buttons and share link
+    function setFileModalVisibility(dialog, isPublic) {
+      const privateButton = dialog.querySelector('.file-private-option');
+      const publicButton = dialog.querySelector('.file-public-option');
+      const publicValue = dialog.querySelector('.file-public-value');
+      const shareLinkSlot = dialog.querySelector('.file-share-link-slot');
+      const shareLinkWrap = dialog.querySelector('.file-share-link-wrap');
+      const shareLink = dialog.querySelector('.file-share-link');
+      const fileId = dialog.dataset.fileId;
 
-      const nameEl = document.getElementById('modal-file-name');
-      const authorEl = document.getElementById('modal-file-author');
-      const mimeEl = document.getElementById('modal-file-mimetype');
-      const sizeEl = document.getElementById('modal-file-size');
-      const dateEl = document.getElementById('modal-file-date');
-      const folderLink = document.getElementById('modal-file-folder-link');
-      const storageEl = document.getElementById('modal-file-storage');
-      const downloadLink = document.getElementById('modal-file-download');
-      const deleteFileForm = document.getElementById('delete-file-form');
-      const deleteFileName = document.getElementById('delete-file-name');
-      const badgeEl = document.querySelector('#file-details-modal .badge-file');
-      const image = badgeEl ? badgeEl.querySelector('img') : null;
+      privateButton.classList.toggle('active', !isPublic);
+      publicButton.classList.toggle('active', isPublic);
+      privateButton.setAttribute('aria-pressed', isPublic ? 'false' : 'true');
+      publicButton.setAttribute('aria-pressed', isPublic ? 'true' : 'false');
 
-      nameEl.textContent = file.fileName || 'Untitled file';
-      deleteFileName.textContent = file.fileName || 'this file';
-      authorEl.textContent = file.author ? file.author.name : 'Unknown';
-      mimeEl.textContent = file.mimeType || 'Unknown';
-      // sizeEl.textContent = formatBytes(Number(file.size) || 0);
-      sizeEl.textContent = file.size;
-
-      const mimeType = file.mimeType.split('/')[0];
-      image.src = `https://api.iconify.design/vscode-icons/file-type-${mimeType}.svg`;
-
-      const dateObj = new Date(file.createdAt || Date.now());
-
-      dateEl.textContent = dateObj.toLocaleDateString();
-      dateEl.setAttribute('datetime', file.createdAt || new Date().toISOString());
-
-      const folderId = file.folderId ?? file.folder?.id;
-
-      folderLink.href = folderId ? `/folders/${folderId}` : '#';
-      folderLink.textContent = file.folder ? file.folder.folderName || file.folder.name : folderId ? `Folder #${folderId}` : 'Unsorted';
-
-      storageEl.textContent = file.storageKey || 'Unknown';
-      downloadLink.href = file.id ? `/files/${file.id}/download` : '#';
-      deleteFileForm.action = file.id ? `/files/${file.id}/delete` : '#';
-
-      drawer.classList.add('open');
-      overlay.classList.add('show');
+      publicValue.value = isPublic ? 'true' : 'false';
+      shareLinkSlot.classList.toggle('is-visible', isPublic);
+      shareLinkWrap.hidden = !isPublic;
+      shareLink.href = `/files/shared/${fileId}`;
+      shareLink.textContent = `${window.location.origin}/files/shared/${fileId}`;
     }
 
-    function closeFileModal() {
-      const drawer = document.getElementById('file-details-modal');
-      const overlay = document.getElementById('file-details-overlay');
-      drawer.classList.remove('open');
-      overlay.classList.remove('show');
+    // set the folder dialog buttons and share link
+    function setFolderModalVisibility(dialog, isPublic) {
+      const privateButton = dialog.querySelector('.folder-private-option');
+      const publicButton = dialog.querySelector('.folder-public-option');
+      const publicValue = dialog.querySelector('.folder-public-value');
+      const shareLinkSlot = dialog.querySelector('.share-link-slot');
+      const shareLinkWrap = dialog.querySelector('.folder-share-link-wrap');
+      const shareLink = dialog.querySelector('.folder-share-link');
+      const folderId = dialog.dataset.folderId;
+
+      privateButton.classList.toggle('active', !isPublic);
+      publicButton.classList.toggle('active', isPublic);
+      privateButton.setAttribute('aria-pressed', isPublic ? 'false' : 'true');
+      publicButton.setAttribute('aria-pressed', isPublic ? 'true' : 'false');
+
+      publicValue.value = isPublic ? 'true' : 'false';
+      shareLinkSlot.classList.toggle('is-visible', isPublic);
+      shareLinkWrap.hidden = !isPublic;
+      shareLink.href = `/folders/shared/${folderId}`;
+      shareLink.textContent = `${window.location.origin}/folders/shared/${folderId}`;
     }
 
-    document.addEventListener('click', (event) => {
-      const overlay = document.getElementById('file-details-overlay');
-      if (event.target === overlay) closeFileModal();
+    // open a file dialog when its row is clicked
+    document.querySelectorAll('.file-modal-open').forEach((row) => {
+      row.addEventListener('click', () => {
+        const dialog = document.getElementById(`file-modal-${row.dataset.fileId}`);
+        dialog.showModal();
+      });
     });
 
-    document.addEventListener('keydown', (event) => {
-      if (event.key === 'Escape') closeFileModal();
+    // open a file dialog from an action button
+    document.querySelectorAll('.file-details-button').forEach((button) => {
+      button.addEventListener('click', () => {
+        const dialog = document.getElementById(`file-modal-${button.dataset.fileId}`);
+        dialog.showModal();
+      });
+    });
+
+    // open a folder share dialog
+    document.querySelectorAll('.folder-share-button').forEach((button) => {
+      button.addEventListener('click', () => {
+        const dialog = document.getElementById(`share-folder-modal-${button.dataset.folderId}`);
+        dialog.showModal();
+      });
+    });
+
+    // switch file visibility
+    document.querySelectorAll('.file-private-option').forEach((button) => {
+      button.addEventListener('click', () => {
+        const dialog = document.getElementById(`file-modal-${button.dataset.fileId}`);
+        setFileModalVisibility(dialog, false);
+      });
+    });
+
+    document.querySelectorAll('.file-public-option').forEach((button) => {
+      button.addEventListener('click', () => {
+        const dialog = document.getElementById(`file-modal-${button.dataset.fileId}`);
+        setFileModalVisibility(dialog, true);
+      });
+    });
+
+    // switch folder visibility
+    document.querySelectorAll('.folder-private-option').forEach((button) => {
+      button.addEventListener('click', () => {
+        const dialog = document.getElementById(`share-folder-modal-${button.dataset.folderId}`);
+        setFolderModalVisibility(dialog, false);
+      });
+    });
+
+    document.querySelectorAll('.folder-public-option').forEach((button) => {
+      button.addEventListener('click', () => {
+        const dialog = document.getElementById(`share-folder-modal-${button.dataset.folderId}`);
+        setFolderModalVisibility(dialog, true);
+      });
+    });
+
+    // initialize file and folder dialogs
+    document.querySelectorAll('.file-visibility-form').forEach((form) => {
+      const dialog = document.getElementById(`file-modal-${form.dataset.fileId}`);
+      const publicButton = dialog.querySelector('.file-public-option');
+      const isPublic = publicButton.getAttribute('aria-pressed') === 'true';
+      setFileModalVisibility(dialog, isPublic);
+    });
+
+    document.querySelectorAll('.folder-modal').forEach((dialog) => {
+      const publicButton = dialog.querySelector('.folder-public-option');
+      const isPublic = publicButton.getAttribute('aria-pressed') === 'true';
+      setFolderModalVisibility(dialog, isPublic);
+    });
+
+    // close the dialog after saving file visibility
+    document.querySelectorAll('.file-visibility-form').forEach((form) => {
+      form.addEventListener('submit', () => {
+        const dialog = document.getElementById(`file-modal-${form.dataset.fileId}`);
+        dialog.close();
+      });
+    });
+
+    // close the dialog after saving folder visibility
+    document.querySelectorAll('.folder-visibility-form').forEach((form) => {
+      form.addEventListener('submit', () => {
+        const dialog = document.getElementById(`share-folder-modal-${form.dataset.folderId}`);
+        dialog.close();
+      });
     });
   </script>
 </html>

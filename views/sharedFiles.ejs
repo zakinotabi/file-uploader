@@ -4,57 +4,28 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= locals.currentFolder ? `${currentFolder} - ` : '' %>Shared Files</title>
-    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/css/base.css" />
+    <link rel="stylesheet" href="/css/files.css" />
+    <link rel="stylesheet" href="/css/modals.css" />
+    <link rel="stylesheet" href="/css/sharedFiles.css" />
   </head>
   <body>
     <%- include('partials/icons') %>
     <main class="content"><%- include('files') %></main>
-    <%- include('partials/modals/showFile') %>
 
     <script>
-      function openFileModal(file) {
-        const drawer = document.getElementById('file-details-modal');
-        const overlay = document.getElementById('file-details-overlay');
-        if (!drawer || !overlay) return;
-
-        document.getElementById('modal-file-name').textContent = file.fileName || 'Untitled file';
-        document.getElementById('modal-file-author').textContent = file.author ? file.author.name : 'Unknown';
-        document.getElementById('modal-file-mimetype').textContent = file.mimeType || 'Unknown';
-        document.getElementById('modal-file-size').textContent = file.size || 'Unknown';
-
-        const date = new Date(file.createdAt || Date.now());
-        const dateElement = document.getElementById('modal-file-date');
-        dateElement.textContent = date.toLocaleDateString();
-        dateElement.setAttribute('datetime', file.createdAt || date.toISOString());
-
-        const folderId = file.folderId ?? file.folder?.id;
-        const folderLink = document.getElementById('modal-file-folder-link');
-        folderLink.href = folderId ? `/folders/${folderId}` : '#';
-        folderLink.textContent = file.folder?.folderName || (folderId ? `Folder #${folderId}` : 'Unsorted');
-
-        document.getElementById('modal-file-storage').textContent = file.storageKey || 'Unknown';
-        document.getElementById('modal-file-download').href = file.id ? `/files/${file.id}/download` : '#';
-
-        const mimeType = file.mimeType ? file.mimeType.split('/')[0] : 'unknown';
-        const image = document.querySelector('#file-details-modal .badge-file img');
-        if (image) image.src = `https://api.iconify.design/vscode-icons/file-type-${mimeType}.svg`;
-
-        drawer.classList.add('open');
-        overlay.classList.add('show');
-      }
-
-      function closeFileModal() {
-        document.getElementById('file-details-modal')?.classList.remove('open');
-        document.getElementById('file-details-overlay')?.classList.remove('show');
-      }
-
-      document.addEventListener('click', (event) => {
-        if (event.target.id === 'file-details-overlay') closeFileModal();
-        if (event.target.closest('[data-close="file-details-modal"]')) closeFileModal();
+      document.querySelectorAll('.file-modal-open').forEach((row) => {
+        row.addEventListener('click', () => {
+          const dialog = document.getElementById(`file-modal-${row.dataset.fileId}`);
+          dialog.showModal();
+        });
       });
 
-      document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape') closeFileModal();
+      document.querySelectorAll('.file-details-button').forEach((button) => {
+        button.addEventListener('click', () => {
+          const dialog = document.getElementById(`file-modal-${button.dataset.fileId}`);
+          dialog.showModal();
+        });
       });
     </script>
   </body>

@@ -1,0 +1,37 @@
+<dialog class="folder-modal" id="share-folder-modal-<%= folder.id %>" data-folder-id="<%= folder.id %>" aria-labelledby="share-folder-title-<%= folder.id %>">
+  <header>
+    <h2 id="share-folder-title-<%= folder.id %>">Share folder</h2>
+    <p>Choose who can access this folder <strong>and all its files.</strong></p>
+  </header>
+
+  <div class="folder-share-body">
+    <div class="folder-share-name"><%= folder.folderName %></div>
+
+    <form class="folder-visibility-form" id="folder-visibility-form-<%= folder.id %>" data-folder-id="<%= folder.id %>" method="post" action="/folders/share/<%= folder.id %>">
+      <input type="hidden" name="public" class="folder-public-value" value="<%= folder.public %>">
+      <div class="visibility-options">
+        <button type="button" class="visibility-option folder-private-option" data-folder-id="<%= folder.id %>" aria-pressed="<%= !folder.public %>">
+          Private
+        </button>
+        <button type="button" class="visibility-option folder-public-option" data-folder-id="<%= folder.id %>" aria-pressed="<%= folder.public %>">
+          <svg class="icon"><use href="#i-public" /></svg>
+          Public
+        </button>
+      </div>
+
+      <div class="share-link-slot">
+        <div class="share-link-wrap folder-share-link-wrap" data-folder-id="<%= folder.id %>" <%= folder.public ? '' : 'hidden' %>>
+          <span>Share link</span>
+          <a class="folder-share-link" data-folder-id="<%= folder.id %>" href="/folders/shared/<%= folder.id %>" target="_blank" rel="noopener">
+            <%= '' %>
+          </a>
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="dialog-submit folder-save-share" data-folder-id="<%= folder.id %>" data-folder-name="<%= folder.folderName %>">Save</button>
+        <button type="button" class="dialog-cancel" data-close="share-folder-modal-<%= folder.id %>">Cancel</button>
+      </div>
+    </form>
+  </div>
+</dialog>

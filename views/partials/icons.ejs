@@ -1,7 +1,26 @@
 <svg width="0" height="0" style="position: absolute" aria-hidden="true">
   <defs>
-    <symbol id="i-cloud" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M17 19H7A4.2 4.2 0 0 1 6.5 10.7a6 6 0 0 1 11.6 1.3A3.6 3.6 0 0 1 17 19z" />
+    <symbol
+      id="i-rain-cloud-big"
+      viewBox="0 0 24 24"
+      overflow="hidden"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.9"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    >
+      <!-- oversized cloud, pushed above the frame so it gets cut off -->
+      <g transform="translate(-6 -20.4) scale(1.6)">
+        <path d="M17 19H7A4.2 4.2 0 0 1 6.5 10.7a6 6 0 0 1 11.6 1.3A3.6 3.6 0 0 1 17 19z" stroke-width="1.1875" />
+      </g>
+
+      <!-- rain -->
+      <path d="M8 13.5l-1 2.2" />
+      <path d="M12 13.5l-1 2.2" />
+      <path d="M16 13.5l-1 2.2" />
+      <path d="M10 17.5l-.8 1.8" />
+      <path d="M14 17.5l-.8 1.8" />
     </symbol>
     <symbol id="i-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
       <path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />

@@ -152,4 +152,3 @@ vite.config.ts.timestamp-*
 
 # local file
 /todo.md
-/public

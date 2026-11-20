@@ -29,6 +29,7 @@ folderName   String
 createdAt    DateTime  @default(now())
 author       User      @relation(fields: [authorId], references: [id]) 
 authorId     Int
+isRoot       Boolean   @default(false)
 public       Boolean   @default(false)
 files        File[]
 

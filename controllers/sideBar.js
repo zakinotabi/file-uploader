@@ -31,7 +31,7 @@ export async function spaceUsed(id) {
 
     const formatStorageUsed = formatFileSize(storageUsed._sum.size ?? 0);
 
-    let calculated = (storageUsed._sum.size ?? 0 * 100) / 500000000;
+    let calculated = ((storageUsed._sum.size ?? 0) * 100) / 500000000;
     if (calculated > 0.0 && calculated < 0.01) {
       calculated = '0.01';
     } else {

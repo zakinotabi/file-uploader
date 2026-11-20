@@ -14,7 +14,13 @@ export const validateSignup = [
     .isLength({ min: 3, max: 30 })
     .withMessage('Username must be between 3 and 30 characters.')
     .matches(/^[a-zA-Z0-9_]+$/)
-    .withMessage('Username can only contain letters, numbers, and underscores.'),
+    .withMessage('Username can only contain letters, numbers, and underscores.')
+    .custom((value) => {
+      const reservedNames = ['admin', 'administrator', 'root', 'superuser', 'moderator', 'support', 'system'];
+
+      return !reservedNames.includes(value.toLowerCase());
+    })
+    .withMessage('This username is reserved. Please choose another one.'),
   body('password').isLength({ min: 5 }).withMessage('Password must be at least 5 characters.'),
   body('confirmPassword')
     .custom((value, { req }) => value === req.body.password)
@@ -54,6 +60,7 @@ export async function addUser(req, res) {
       folders: {
         create: {
           folderName: 'My files',
+          isRoot: true,
         },
       },
     },

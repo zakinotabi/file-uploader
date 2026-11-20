@@ -1,54 +1,101 @@
-<div class="overlay" id="file-details-overlay"></div>
-
-<aside class="drawer" id="file-details-modal" aria-label="File details">
-  <div class="drawer-head">
-    <h3>File details</h3>
-    <button type="button" class="icon-btn" data-close="file-details-modal" aria-label="Close file details">
-      <svg class="icon"><use href="#i-close" /></svg>
-    </button>
-  </div>
-
-  <div class="drawer-body">
-    <div class="thumb">
-      <div class="badge-file"><img src="" alt="" /></div>
+<%
+  const isShared = Boolean(locals.shared);
+  const folderId = file.folderId ?? file.folder?.id;
+  const folderName = file.folder?.folderName || file.folder?.name;
+%>
+<dialog
+  class="file-dialog file-modal"
+  id="file-modal-<%= file.id %>"
+  data-file-id="<%= file.id %>"
+  aria-labelledby="file-modal-title-<%= file.id %>"
+  onclick="if (event.target === this) this.close()"
+>
+  <div class="file-dialog-inner">
+    <div class="drawer-head">
+      <h3>File details</h3>
     </div>
 
-    <div class="drawer-file-name" id="modal-file-name"></div>
-    <div class="drawer-file-sub">Uploaded by <span id="modal-file-author">Unknown</span></div>
+    <div class="drawer-body">
+      <div class="thumb">
+        <div class="badge-file">
+          <img src="https://icon-forge.el3zahaby.workers.dev/file-icon?ext=<%= file.fileName.split('.')[1] || "file"%>" alt="">
+        </div>
+      </div>
 
-    <dl class="meta-list">
-      <div class="meta">
-        <dt>Type</dt>
-        <dd id="modal-file-mimetype">—</dd>
-      </div>
-      <div class="meta">
-        <dt>Size</dt>
-        <dd id="modal-file-size">—</dd>
-      </div>
-      <div class="meta">
-        <dt>Uploaded</dt>
-        <dd><time id="modal-file-date"></time></dd>
-      </div>
-      <div class="meta">
-        <dt>Folder</dt>
-        <dd><a id="modal-file-folder-link" href="#">View Folder</a></dd>
-      </div>
-      <div class="meta">
-        <dt>Storage</dt>
-        <dd id="modal-file-storage">—</dd>
-      </div>
-    </dl>
+      <div class="drawer-file-name" id="file-modal-title-<%= file.id %>"><%= file.fileName || 'Untitled file' %></div>
+      <div class="drawer-file-sub">Uploaded by <%= file.author?.name || locals?.session?.user?.name || 'Unknown' %></div>
+
+      <dl class="meta-list">
+        <div class="meta"><dt>Type</dt><dd><%= file.fileName.split('.')[1] || 'Unknown' %></dd></div>
+        <div class="meta"><dt>Size</dt><dd><%= file.size %></dd></div>
+        <div class="meta">
+          <dt>Uploaded</dt>
+          <dd><time datetime="<%= file.createdAt?.toISOString() %>"><%= file.createdAt?.toLocaleDateString() %></time></dd>
+        </div>
+        <div class="meta">
+          <dt>Folder</dt>
+          <dd>
+            <% if (folderId) { %>
+              <a href="/folders/<%= folderId %>"><%= folderName || `Folder #${folderId}` %></a>
+            <% } else { %>Unsorted<% } %>
+          </dd>
+        </div>
+        <div class="meta"><dt>Storage</dt><dd><%= file.storageKey || 'Unknown' %></dd></div>
+        <% if (!isShared) { %>
+          <div class="meta visibility-meta">
+            <dt>Visibility</dt>
+            <dd>
+              <form class="visibility-form file-visibility-form" id="file-visibility-form-<%= file.id %>" data-file-id="<%= file.id %>" method="post" action="/files/share/<%= file.id %>">
+                <input type="hidden" name="public" class="file-public-value" value="<%= file.public %>" />
+                <div class="visibility-options">
+                  <button type="button" class="visibility-option file-private-option" data-file-id="<%= file.id %>" aria-pressed="<%= !file.public %>">
+                    Private
+                  </button>
+                  <button type="button" class="visibility-option file-public-option" data-file-id="<%= file.id %>" aria-pressed="<%= file.public %>">
+                    <svg class="icon"><use href="#i-public" /></svg>
+                    Public
+                  </button>
+                </div>
+
+                <div class="share-link-slot file-share-link-slot">
+                  <div class="share-link-wrap file-share-link-wrap" data-file-id="<%= file.id %>" <%= file.public ? '' : 'hidden' %>>
+                    <span>Share link</span>
+                    <a class="file-share-link" data-file-id="<%= file.id %>" href="/files/shared/<%= file.id %>" target="_blank" rel="noopener"><%= '' %></a>
+                  </div>
+                </div>
+
+                <button type="submit" class="btn primary block file-save-share" data-file-id="<%= file.id %>">Save</button>
+              </form>
+            </dd>
+          </div>
+        <% } else { %>
+          <div class="meta">
+            <dt>Link</dt>
+            <dd>
+              <a class="file-share-link" data-file-id="<%= file.id %>" href="/files/shared/<%= file.id %>" target="_blank" rel="noopener">/files/shared/<%= file.id %></a>
+            </dd>
+          </div>
+        <% } %>
+      </dl>
+    </div>
+
+    <div class="drawer-foot">
+      <a class="btn primary" href="/files/<%= file.id %>/download">
+        <svg class="icon"><use href="#i-download" /></svg> Download
+      </a>
+
+      <% if (!isShared) { %>
+        <button
+          type="button"
+          class="btn danger"
+          title="Delete file"
+          data-open="delete-file-modal"
+          data-file-id="<%= file.id %>"
+          data-file-name="<%= file.fileName %>"
+        >
+          <svg class="icon"><use href="#i-trash" /></svg>
+        </button>
+      <% } %>
+    </div>
   </div>
-
-  <div class="drawer-foot">
-    <a id="modal-file-download" class="btn primary" href="#">
-      <svg class="icon"><use href="#i-download" /></svg> Download
-    </a>
-
-    <% if (!locals.shared) { %>
-    <button type="button" id="modal-file-delete-button" class="btn danger" title="Delete file" data-open="delete-file-modal">
-      <svg class="icon"><use href="#i-trash" /></svg>
-    </button>
-    <% } %>
-  </div>
-</aside>
+</dialog>
