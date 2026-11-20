@@ -1,37 +1,54 @@
 import multer from 'multer';
 import crypto from 'node:crypto';
-import path from 'node:path';
 import { prisma } from '../lib/prisma.js';
+import { supabase, BUCKET } from '../supabase.js';
 import { formatFileSize } from './formatFileSize.js';
 
-const storage = multer.diskStorage({
-  // WHERE to save the file
+// const storage = multer.diskStorage({
+//   // WHERE to save the file
 
-  destination: 'public/upload',
-  // WHAT to name the file on disk
-  filename: function (req, file, cb) {
-    crypto.randomBytes(16, function (err, raw) {
-      if (err) return cb(err);
-      cb(null, file.fieldname + '-' + raw.toString('hex'));
-    });
-  },
-});
+//   destination: 'public/upload',
+//   // WHAT to name the file on disk
+//   filename: function (req, file, cb) {
+//     crypto.randomBytes(16, function (err, raw) {
+//       if (err) return cb(err);
+//       cb(null, file.fieldname + '-' + raw.toString('hex'));
+//     });
+//   },
+// });
 
 // Export it so routes can use it as middleware
-export const upload = multer({ storage });
+// Keep the file in memory instead of saving it to disk
+export const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 50 * 1024 * 1024 }, // 50 MB, the free tier max
+});
 
-// back later we need to have a root folder,
 export async function saveFileInDb(req, res) {
   if (!req.file || !req.body.folderId) return res.status(400).send('data lack');
+
+  const userId = Number(res.locals.session.user.id);
+
+  // Unique path inside the bucket (no original name, so no weird characters)
+  const storageKey = `${userId}/${crypto.randomBytes(16).toString('hex')}`;
+
+  const { error } = await supabase.storage.from(BUCKET).upload(storageKey, req.file.buffer, {
+    contentType: req.file.mimetype,
+  });
+
+  if (error) {
+    console.error(error);
+    return res.status(500).send('Upload failed');
+  }
 
   await prisma.file.create({
     data: {
       fileName: req.file.originalname,
-      storageKey: req.file.filename,
+      storageKey,
       mimeType: req.file.mimetype,
       size: Number(req.file.size),
       folderId: Number(req.body.folderId),
-      authorId: Number(res.locals.session.user.id),
+      authorId: userId,
     },
   });
 
@@ -151,20 +168,38 @@ export async function downloadFile(req, res) {
     return res.status(404).send('File not found');
   }
 
+  // old
   // 2. Get the physical file path on the server
-  const filePath = path.join(process.cwd(), 'public', 'upload', file.storageKey);
+  // const filePath = path.join(process.cwd(), 'public', 'upload', file.storageKey);
 
   // 3. Send the file to the browser with its original name
-  res.download(filePath, file.fileName);
+  // res.download(filePath, file.fileName);
+
+  // Temporary link, valid for 60 seconds
+  const { data, error } = await supabase.storage.from(BUCKET).createSignedUrl(file.storageKey, 60, { download: file.fileName });
+
+  if (error) {
+    console.error(error);
+    return res.status(500).send('Could not get file');
+  }
+
+  res.redirect(data.signedUrl);
 }
 
 export async function deleteFile(req, res) {
-  const folder = await prisma.file.delete({
-    where: {
-      id: Number(req.params.id),
-      authorId: Number(res.locals.session.user.id),
-    },
+  const userId = Number(res.locals.session.user.id);
+
+  const file = await prisma.file.findFirst({
+    where: { id: Number(req.params.id), authorId: userId },
   });
+
+  if (!file) return res.status(404).send('File not found');
+
+  // Remove from the bucket first, then from the database
+  const { error } = await supabase.storage.from(BUCKET).remove([file.storageKey]);
+  if (error) console.error(error);
+
+  await prisma.file.delete({ where: { id: file.id } });
 
   res.redirect(req.get('Referrer') || '/');
 }
